@@ -1,0 +1,33 @@
+{
+  "name": "@atomico/plugin-vite",
+  "description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
+  "meta": {
+    "title": "Started - Atomico + Vite(JS,JSX,TS,TSX)",
+    "description": "Hassle-free starter template, perfect for starting with Atomico",
+    "branch": "https://github.com/atomicojs/atomico/tree/2-started/"
+  },
+  "workspaces": [
+    "src/**/*",
+    "site"
+  ],
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "exports": "exports src/components.js --exports --types --main components",
+    "prepublishOnly": "npm run exports"
+  },
+  "dependencies": {
+    "atomico": "latest",
+    "magic-string": "^0.26.1"
+  },
+  "devDependencies": {
+    "@atomico/exports": "^0.27.0",
+    "vite": "latest"
+  },
+  "peerDependencies": {
+    "atomico": "latest"
+  }
+}
