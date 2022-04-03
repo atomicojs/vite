@@ -11,7 +11,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "exports": "exports src/plugin.js --exports --types --main components",
+    "exports": "exports src/plugin.js --exports --types --main plugin",
     "prepublishOnly": "npm run exports"
   },
   "dependencies": {
