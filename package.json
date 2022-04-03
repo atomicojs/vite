@@ -8,6 +8,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/atomicojs/plugin-vite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/atomicojs/plugin-vite/issues"
+  },
+  "homepage": "https://github.com/atomicojs/plugin-vite#readme",
   "scripts": {
     "start": "vite",
     "build": "vite build",
