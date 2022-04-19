@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "atomico": "latest",
-    "magic-string": "^0.26.1"
+    "magic-string": "latest"
   },
   "devDependencies": {
     "@atomico/exports": "^0.27.0",
@@ -35,6 +35,7 @@
     "vite": "latest"
   },
   "peerDependencies": {
-    "atomico": "latest"
+    "atomico": "latest",
+    "magic-string": "latest"
   }
 }

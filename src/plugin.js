@@ -1,5 +1,6 @@
 import MagicString from "magic-string";
 
+const virtualPolyfillVitest = " atomico-polyfill-vitest";
 /**
  *
  * @returns {import("vite").Plugin}
@@ -21,15 +22,32 @@ export default ({
     };
   },
   transform(code, id) {
-    if (/\.(tsx|jsx)$/.test(id)) {
+    const isJSX = /\.(tsx|jsx)$/.test(id);
+    const isTest = /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
+    if (isJSX || isTest) {
       const magicString = new MagicString(code);
-      magicString.prepend(
-        `import { ${jsxPragma} as ${jsxFactory} } from "${jsxImportSource}";\n`
-      );
+      if (isJSX) {
+        magicString.prepend(
+          `import { ${jsxPragma} as ${jsxFactory} } from "${jsxImportSource}";`
+        );
+      }
+      if (isTest) {
+        magicString.prepend(`import "${virtualPolyfillVitest}";`);
+      }
       return {
         map: magicString.generateMap({ hires: true }),
         code: magicString.toString(),
       };
+    }
+  },
+  load(id) {
+    if (id === virtualPolyfillVitest) {
+      return `
+      import { beforeEach, afterEach } from "vitest";
+
+      window.beforeEach = beforeEach;
+      window.afterEach = afterEach;
+      `;
     }
   },
 });
