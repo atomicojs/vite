@@ -31,7 +31,7 @@ export default ({
           `import { ${jsxPragma} as ${jsxFactory} } from "${jsxImportSource}";`
         );
       }
-      if (isTest) {
+      if (isTest && process.env.VITEST) {
         magicString.prepend(`import "${virtualPolyfillVitest}";`);
       }
       return {
