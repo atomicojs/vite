@@ -25,6 +25,7 @@
     "prepublishOnly": "npm run exports"
   },
   "dependencies": {
+    "@uppercod/template-literals": "^1.0.0",
     "atomico": "latest",
     "magic-string": "latest"
   },
