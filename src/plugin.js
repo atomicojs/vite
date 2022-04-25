@@ -74,7 +74,7 @@ export default ({
                     ...options,
                     from: id,
                   });
-                  css = result.css.replace(/`/g, "\\`").replace(/\${/g, "\\${");
+                  css = result.css;
                 }
 
                 if (cssLiterals.minify) {
@@ -86,7 +86,7 @@ export default ({
 
                 if (css === code) return;
 
-                magicString.overwrite(start, end, css);
+                magicString.overwrite(start, end, css.replace(/`/g, "\\`"));
               })
           );
         }
