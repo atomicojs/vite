@@ -20,9 +20,9 @@
   "homepage": "https://github.com/atomicojs/plugin-vite#readme",
   "scripts": {
     "start": "vite",
+    "types": "tsc",
     "build": "vite build",
-    "exports": "exports src/plugin.js --exports --types --main plugin",
-    "prepublishOnly": "npm run exports"
+    "prepublishOnly": "npm run types"
   },
   "dependencies": {
     "@uppercod/template-literals": "^1.0.0",
