@@ -8,7 +8,7 @@
   "version": "1.2.0",
   "type": "module",
   "main": "./src/plugin.js",
-  "types": "./types.d.ts",
+  "types": "./types/plugin.d.ts",
   "exports": {
     ".": "./src/plugin.js"
   },
@@ -41,6 +41,8 @@
   "devDependencies": {
     "@types/node": "^17.0.26",
     "fast-glob": "^3.2.11",
+    "normalize.css": "^8.0.1",
+    "postcss-import": "^14.1.0",
     "typescript": "^4.6.3",
     "vite": "latest",
     "vitest": "^0.9.4"
@@ -50,5 +52,10 @@
     "magic-string": "latest",
     "postcss": "latest",
     "postcss-load-config": "latest"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {}
+    }
   }
 }

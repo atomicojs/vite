@@ -8,5 +8,5 @@ export default defineConfig({
   test: {
     environment: "node",
   },
-  plugins: [plugin({ cssLiterals: { minify: true } })],
+  plugins: [plugin({ cssLiterals: { minify: true, postcss: true } })],
 });

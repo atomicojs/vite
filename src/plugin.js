@@ -18,8 +18,7 @@ export default ({
     postcss: false,
   },
 } = {}) => {
-  let currentConfigPostCss =
-    cssLiterals.postcss && postcssLoadConfig({ parser: true });
+  let currentConfigPostCss = cssLiterals.postcss && postcssLoadConfig();
 
   let environment;
 
@@ -70,12 +69,12 @@ export default ({
                 let css = code.slice(start, end);
 
                 if (cssLiterals.postcss) {
-                  css = (await currentConfigPostCss).then(
-                    ({ plugins, options }) =>
-                      postcss(plugins)
-                        .process(css, options)
-                        .then((result) => result.css)
-                  );
+                  const { plugins, options } = await currentConfigPostCss;
+                  const result = await postcss(plugins).process(css, {
+                    ...options,
+                    from: id,
+                  });
+                  css = result.css.replace(/`/g, "\\`").replace(/\${/g, "\\${");
                 }
 
                 if (cssLiterals.minify) {
