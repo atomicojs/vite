@@ -21,9 +21,12 @@ export default ({
   let currentConfigPostCss =
     cssLiterals.postcss && postcssLoadConfig({ parser: true });
 
+  let environment;
+
   return {
     name: "@atomico/plugin-vite",
     config(opts) {
+      environment = opts?.test?.environment;
       return {
         ...opts,
         esbuild: {
@@ -36,8 +39,11 @@ export default ({
     async transform(code, id) {
       const isJs = /\.(tsx|jsx|js|mjs|ts)$/.test(id);
       const isJSX = /\.(tsx|jsx)$/.test(id);
-      const isTest = /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
-      const withCssLiterals = isJSX && code.includes("css`");
+      const isTest =
+        environment === "happy-dom" &&
+        /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
+
+      const withCssLiterals = isJs && code.includes("css`");
 
       if (isJSX || isTest || withCssLiterals) {
         const magicString = new MagicString(code);
@@ -96,7 +102,7 @@ export default ({
       if (id === virtualPolyfillVitest) {
         return `
         import { beforeEach, afterEach } from "vitest";
-  
+        
         window.beforeEach = beforeEach;
         window.afterEach = afterEach;
         `;

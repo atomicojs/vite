@@ -6,6 +6,7 @@
     "site"
   ],
   "version": "1.2.0",
+  "types": "./types.d.ts",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -21,8 +22,10 @@
   "scripts": {
     "start": "vite",
     "types": "tsc",
-    "build": "vite build",
-    "prepublishOnly": "npm run types"
+    "test": "vitest run",
+    "build": "rm -rf tests/build  && vite build --outDir tests/build",
+    "build:expect": "vite build --outDir tests/expect",
+    "prepublishOnly": "npm run types && npm run build && npm run test"
   },
   "dependencies": {
     "@uppercod/template-literals": "^1.0.0",
@@ -33,7 +36,8 @@
     "@atomico/exports": "^0.27.0",
     "@types/node": "^17.0.26",
     "typescript": "^4.6.3",
-    "vite": "latest"
+    "vite": "latest",
+    "vitest": "^0.9.4"
   },
   "peerDependencies": {
     "atomico": "latest",

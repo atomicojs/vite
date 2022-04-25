@@ -5,5 +5,8 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
+  test: {
+    environment: "node",
+  },
   plugins: [plugin({ cssLiterals: { minify: true } })],
 });
