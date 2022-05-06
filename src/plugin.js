@@ -1,8 +1,8 @@
-import MagicString from "magic-string";
-import templateLiterals from "@uppercod/template-literals";
-import { transformSync } from "esbuild";
-import postcss from "postcss";
-import postcssLoadConfig from "postcss-load-config";
+import {
+  pipeline,
+  jsxRuntime,
+  cssLiterals as _cssLiterals,
+} from "@atomico/pipeline";
 
 const virtualPolyfillVitest = " atomico-polyfill-vitest";
 /**
@@ -10,27 +10,37 @@ const virtualPolyfillVitest = " atomico-polyfill-vitest";
  * @returns {import("vite").Plugin}
  */
 export default ({
-  jsxImportSource = "atomico/jsx-runtime",
-  jsxPragma = "jsx",
-  jsxFactory = "_jsx",
+  jsx = true,
   cssLiterals = {
     minify: false,
     postcss: false,
   },
 } = {}) => {
-  let currentConfigPostCss = cssLiterals.postcss && postcssLoadConfig();
-
   let environment;
 
   return {
     name: "@atomico/plugin-vite",
     config(opts) {
       environment = opts?.test?.environment;
+
+      const include = opts?.optimizeDeps?.include || [];
+      const exclude = opts?.optimizeDeps?.exclude || [];
+
+      if (!include.includes("atomico")) include.push("atomico");
+      if (!include.includes("atomico/jsx-runtime"))
+        include.push("atomico/jsx-runtime");
+
+      if (!exclude.includes("atomico/ssr")) exclude.push("atomico/ssr");
+
       return {
         ...opts,
+        optimizeDeps: {
+          include,
+          exclude,
+        },
         esbuild: {
           ...opts.esbuild,
-          jsxFactory: jsxFactory,
+          jsxFactory: "_jsx",
           jsxFragment: `"host"`,
         },
       };
@@ -45,50 +55,23 @@ export default ({
       const withCssLiterals = isJs && code.includes("css`");
 
       if (isJSX || isTest || withCssLiterals) {
-        const magicString = new MagicString(code);
+        const plugins = [];
 
-        if (isJSX) {
-          magicString.prepend(
-            `import { ${jsxPragma} as ${jsxFactory} } from "${jsxImportSource}";`
-          );
+        if (jsx && isJSX) {
+          plugins.push(jsxRuntime());
         }
+
+        if (withCssLiterals && cssLiterals) {
+          plugins.push(_cssLiterals(cssLiterals));
+        }
+
+        const { source: magicString } = await pipeline(
+          { code, path: id },
+          ...plugins
+        );
 
         if (isTest && process.env.VITEST) {
           magicString.prepend(`import "${virtualPolyfillVitest}";`);
-        }
-
-        if (
-          (cssLiterals.minify || cssLiterals.postcss) &&
-          !isTest &&
-          withCssLiterals
-        ) {
-          await Promise.all(
-            templateLiterals(code)
-              .filter(({ type, params }) => type === "css" && !params.length)
-              .map(async ({ start, end }) => {
-                let css = code.slice(start, end);
-
-                if (cssLiterals.postcss) {
-                  const { plugins, options } = await currentConfigPostCss;
-                  const result = await postcss(plugins).process(css, {
-                    ...options,
-                    from: id,
-                  });
-                  css = result.css;
-                }
-
-                if (cssLiterals.minify) {
-                  css = transformSync(css, {
-                    loader: "css",
-                    minify: true,
-                  }).code;
-                }
-
-                if (css === code) return;
-
-                magicString.overwrite(start, end, css.replace(/`/g, "\\`"));
-              })
-          );
         }
 
         return {

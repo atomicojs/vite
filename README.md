@@ -12,6 +12,14 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
-  plugins: [atomico()],
+  plugins: [
+    atomico({
+      jsx: true, // default true
+      cssLiterals: {
+        minify: true, // default false
+        postcss: true, // default false
+      },
+    }),
+  ],
 });
 ```

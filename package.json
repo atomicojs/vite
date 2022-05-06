@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/atomicojs/plugin-vite#readme",
   "scripts": {
-    "start": "vite",
+    "start": "vite --force",
     "types": "tsc",
     "test": "vitest run",
     "build": "rm -rf tests/build  && vite build --outDir tests/build",
@@ -32,6 +32,7 @@
     "prepublishOnly": "npm run types && npm run build && npm run test"
   },
   "dependencies": {
+    "@atomico/pipeline": "^0.1.0",
     "@uppercod/template-literals": "latest",
     "atomico": "latest",
     "magic-string": "latest",
