@@ -33,11 +33,7 @@
   },
   "dependencies": {
     "@atomico/pipeline": "^0.1.0",
-    "@uppercod/template-literals": "latest",
-    "atomico": "latest",
-    "magic-string": "latest",
-    "postcss": "latest",
-    "postcss-load-config": "latest"
+    "atomico": "latest"
   },
   "devDependencies": {
     "@types/node": "^17.0.26",
@@ -49,10 +45,7 @@
     "vitest": "^0.9.4"
   },
   "peerDependencies": {
-    "atomico": "latest",
-    "magic-string": "latest",
-    "postcss": "latest",
-    "postcss-load-config": "latest"
+    "atomico": "latest"
   },
   "postcss": {
     "plugins": {
