@@ -26,11 +26,8 @@ export default ({
       const include = opts?.optimizeDeps?.include || [];
       const exclude = opts?.optimizeDeps?.exclude || [];
 
-      if (!include.includes("atomico")) include.push("atomico");
-      if (!include.includes("atomico/jsx-runtime"))
+      if (jsx && !include.includes("atomico/jsx-runtime"))
         include.push("atomico/jsx-runtime");
-
-      if (!exclude.includes("atomico/ssr")) exclude.push("atomico/ssr");
 
       return {
         ...opts,
