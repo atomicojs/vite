@@ -3,6 +3,7 @@ import {
   jsxRuntime,
   cssLiterals as _cssLiterals,
 } from "@atomico/pipeline";
+import { fileURLToPath } from "url";
 
 const virtualPolyfillVitest = " atomico-polyfill-vitest";
 /**
@@ -53,13 +54,14 @@ export default ({
 
       if (isJSX || isTest || withCssLiterals) {
         const plugins = [];
+        const report = {};
 
         if (jsx && isJSX) {
           plugins.push(jsxRuntime());
         }
 
         if (withCssLiterals && cssLiterals) {
-          plugins.push(_cssLiterals(cssLiterals));
+          plugins.push(_cssLiterals({ ...cssLiterals, report }));
         }
 
         const { source: magicString } = await pipeline(
@@ -70,6 +72,10 @@ export default ({
         if (isTest && process.env.VITEST) {
           magicString.prepend(`import "${virtualPolyfillVitest}";`);
         }
+
+        Object.keys(report).forEach((file) =>
+          this.addWatchFile(fileURLToPath(file))
+        );
 
         return {
           map: magicString.generateMap({ hires: true }),
