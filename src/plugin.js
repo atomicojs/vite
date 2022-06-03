@@ -101,9 +101,9 @@ export default ({
             const src = fileURLToPath(file);
             if (!files[src]) {
               watcher.add(src);
-              this.addWatchFile(src);
               files[src] = true;
             }
+            this.addWatchFile(src);
           });
         }
 
