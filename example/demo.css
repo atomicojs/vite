@@ -1,3 +1,5 @@
+@tokens "./tokens.yaml" (prefix: my-component);
+
 :host {
-  background: orange;
+  background: var(--background);
 }

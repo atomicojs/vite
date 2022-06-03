@@ -18,6 +18,15 @@ export default ({
   },
 } = {}) => {
   let environment;
+  /**
+   * @type {Object<string,boolean>}
+   */
+  const files = {};
+
+  /**
+   * @type {import("vite").FSWatcher}
+   */
+  let watcher;
 
   return {
     name: "@atomico/plugin-vite",
@@ -42,6 +51,20 @@ export default ({
           jsxFragment: `"host"`,
         },
       };
+    },
+    configureServer(server) {
+      watcher = server.watcher;
+      /**
+       * @param {string} path
+       */
+      const reload = (path) => {
+        server.ws.send({
+          type: "full-reload",
+          path,
+        });
+      };
+
+      watcher.on("change", (file) => files[file] && reload(file));
     },
     async transform(code, id) {
       const isJs = /\.(tsx|jsx|js|mjs|ts)$/.test(id);
@@ -73,9 +96,16 @@ export default ({
           magicString.prepend(`import "${virtualPolyfillVitest}";`);
         }
 
-        Object.keys(report).forEach((file) =>
-          this.addWatchFile(fileURLToPath(file))
-        );
+        if (watcher) {
+          Object.keys(report).forEach((file) => {
+            const src = fileURLToPath(file);
+            if (!files[src]) {
+              watcher.add(src);
+              this.addWatchFile(src);
+              files[src] = true;
+            }
+          });
+        }
 
         return {
           map: magicString.generateMap({ hires: true }),
