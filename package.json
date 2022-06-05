@@ -1,11 +1,11 @@
 {
-  "name": "@atomico/plugin-vite",
+  "name": "@atomico/vite",
   "description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
   "workspaces": [
     "src/**/*",
     "site"
   ],
-  "version": "1.4.3",
+  "version": "1.0.0",
   "type": "module",
   "main": "./src/plugin.js",
   "types": "./types/plugin.d.ts",
@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/atomicojs/plugin-vite.git"
+    "url": "git+ssh://git@github.com/atomicojs/vite.git"
   },
   "bugs": {
-    "url": "https://github.com/atomicojs/plugin-vite/issues"
+    "url": "https://github.com/atomicojs/vite/issues"
   },
-  "homepage": "https://github.com/atomicojs/plugin-vite#readme",
+  "homepage": "https://github.com/atomicojs/vite#readme",
   "scripts": {
     "start": "vite --force",
     "types": "tsc",
