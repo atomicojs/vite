@@ -1,5 +1,7 @@
 # @atomico/plugin-vite
 
+## this package is now called [@atomico/vite](https://github.com/atomicojs/vite)
+
 configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite.
 
 ## Usage
