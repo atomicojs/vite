@@ -5,7 +5,7 @@
     "src/**/*",
     "site"
   ],
-  "version": "1.5.0",
+  "version": "1.5.1",
   "type": "module",
   "main": "./src/plugin.js",
   "types": "./types/plugin.d.ts",
@@ -32,8 +32,12 @@
     "prepublishOnly": "npm run types && npm run test"
   },
   "dependencies": {
-    "@atomico/pipeline": "^0.5.1",
-    "atomico": "^1.55.2"
+    "@atomico/pipeline": "latest",
+    "atomico": "latest"
+  },
+  "peerDependencies": {
+    "@atomico/pipeline": "latest",
+    "atomico": "latest"
   },
   "devDependencies": {
     "@atomico/postcss-tokens": "latest",
