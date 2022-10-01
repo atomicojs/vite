@@ -1,127 +1,86 @@
-import {
-  pipeline,
-  jsxRuntime,
-  cssLiterals as _cssLiterals,
-} from "@atomico/pipeline";
 import { fileURLToPath } from "url";
-
-const virtualPolyfillVitest = " atomico-polyfill-vitest";
+import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
+import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
+import { pluginVitest } from "./plugins/plugin-vitest.js";
+import { getTsConfig } from "./plugins/utils.js";
 /**
  *
- * @returns {import("vite").Plugin}
+ * @returns {import("vite").Plugin[]}
  */
 export default ({
-  jsx = true,
-  cssLiterals = {
-    minify: false,
-    postcss: false,
-  },
+    jsx = true,
+    cssLiterals = {
+        minify: false,
+        postcss: false,
+    },
+    tsconfigSrc = process.cwd() + "/tsconfig.json",
 } = {}) => {
-  let environment;
-  /**
-   * @type {Object<string,boolean>}
-   */
-  const files = {};
+    const tsconfig = getTsConfig(tsconfigSrc);
 
-  /**
-   * @type {import("vite").FSWatcher}
-   */
-  let watcher;
+    const files = {};
 
-  return {
-    name: "@atomico/plugin-vite",
-    config(opts) {
-      environment = opts?.test?.environment;
+    /**
+     * @type {import("vite").FSWatcher}
+     */
+    let watcher;
 
-      const include = opts?.optimizeDeps?.include || [];
-      const exclude = opts?.optimizeDeps?.exclude || [];
+    /**
+     * @type {import("vite").Plugin[]}
+     */
+    const plugins = [
+        {
+            name: "atomico-plugin",
+            configureServer(server) {
+                watcher = server.watcher;
+                /**
+                 * @param {string} path
+                 */
+                const reload = (path) => {
+                    server.ws.send({
+                        type: "full-reload",
+                        path,
+                    });
+                };
 
-      if (jsx && !include.includes("atomico/jsx-runtime"))
-        include.push("atomico/jsx-runtime");
-
-      return {
-        ...opts,
-        optimizeDeps: {
-          include,
-          exclude,
+                watcher.on("change", (file) => files[file] && reload(file));
+            },
+            config(config, { command }) {
+                if (jsx && tsconfig?.compilerOptions?.jsxImportSource) {
+                    return {
+                        esbuild: {
+                            jsx: "automatic",
+                            jsxImportSource:
+                                tsconfig.compilerOptions.jsxImportSource,
+                        },
+                        ...(command === "serve"
+                            ? {
+                                  optimizeDeps: {
+                                      exclude: ["atomico/jsx-runtime"],
+                                  },
+                              }
+                            : {}),
+                    };
+                }
+            },
         },
-        esbuild: {
-          ...opts.esbuild,
-          jsxFactory: "_jsx",
-          jsxFragment: `"host"`,
-        },
-      };
-    },
-    configureServer(server) {
-      watcher = server.watcher;
-      /**
-       * @param {string} path
-       */
-      const reload = (path) => {
-        server.ws.send({
-          type: "full-reload",
-          path,
-        });
-      };
+    ];
 
-      watcher.on("change", (file) => files[file] && reload(file));
-    },
-    async transform(code, id) {
-      const isJs = /\.(tsx|jsx|js|mjs|ts)$/.test(id);
-      const isJSX = /\.(tsx|jsx)$/.test(id);
-      const isTest =
-        environment === "happy-dom" &&
-        /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
-
-      const withCssLiterals = isJs && code.includes("css`");
-
-      if (isJSX || isTest || withCssLiterals) {
-        const plugins = [];
-        const report = {};
-
-        if (jsx && isJSX) {
-          plugins.push(jsxRuntime());
-        }
-
-        if (withCssLiterals && cssLiterals) {
-          plugins.push(_cssLiterals({ ...cssLiterals, report }));
-        }
-
-        const { source: magicString } = await pipeline(
-          { code, path: id },
-          ...plugins
+    if (cssLiterals)
+        plugins.push(
+            pluginCssLiterals({
+                ...cssLiterals,
+                addFile(src) {
+                    files[src] = true;
+                    if (watcher) watcher.add(src);
+                },
+            })
         );
 
-        if (isTest && process.env.VITEST) {
-          magicString.prepend(`import "${virtualPolyfillVitest}";`);
-        }
+    if (jsx) {
+        plugins.push(pluginEsbuild({ tsconfig }));
+    }
 
-        if (watcher) {
-          Object.keys(report).forEach((file) => {
-            const src = fileURLToPath(file);
-            if (!files[src]) {
-              watcher.add(src);
-              files[src] = true;
-            }
-            this.addWatchFile(src);
-          });
-        }
+    if (process.env.VITEST) plugins.push(pluginEsbuild(pluginVitest));
 
-        return {
-          map: magicString.generateMap({ hires: true }),
-          code: magicString.toString(),
-        };
-      }
-    },
-    load(id) {
-      if (id === virtualPolyfillVitest) {
-        return `
-        import { beforeEach, afterEach } from "vitest";
-        
-        window.beforeEach = beforeEach;
-        window.afterEach = afterEach;
-        `;
-      }
-    },
-  };
+    return plugins;
 };
