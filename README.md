@@ -22,11 +22,17 @@ export default defineConfig({
                 minify: true, // default false
                 postcss: true, // default false
             },
-            lib: {
-                input: "./src/**",
-                dist: "./dist",
-            },
         }),
     ],
 });
 ```
+
+## CLI
+
+This package incorporates a CLI to facilitate the export of libraries through vite, example:
+
+```bash
+atomico-vite src/**/*.{js,tsx,ts,tsx}
+```
+
+The above script will create the files according to your current vite.config.js configuration, but in a directory called `lib` and with a simple name.
