@@ -11,17 +11,22 @@ import { defineConfig } from "vite";
 import atomico from "@atomico/plugin-vite";
 
 export default defineConfig({
-  build: {
-    target: "esnext",
-  },
-  plugins: [
-    atomico({
-      jsx: true, // default true
-      cssLiterals: {
-        minify: true, // default false
-        postcss: true, // default false
-      },
-    }),
-  ],
+    build: {
+        target: "esnext",
+        lib: {},
+    },
+    plugins: [
+        ...atomico({
+            jsx: true, // default true
+            cssLiterals: {
+                minify: true, // default false
+                postcss: true, // default false
+            },
+            lib: {
+                input: "./src/**",
+                dist: "./dist",
+            },
+        }),
+    ],
 });
 ```
