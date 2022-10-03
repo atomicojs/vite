@@ -1,6 +1,6 @@
 {
   "extends": "@atomico/tsconfig/base.json",
-  "include": ["src/**/*","tests/**/*"],
+  "include": ["src/**/*"],
   "compilerOptions": {
     "outDir":"types"
   }
