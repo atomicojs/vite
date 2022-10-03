@@ -4,7 +4,8 @@ import { getExtension, isJsx } from "./utils.js";
 const cwd = process.cwd();
 /**
  * @param {object} options
- * @param {any} options.tsconfig
+ * @param {{compilerOptions:{jsxImportSource:string}}} options.tsconfig
+ * @param {("js"|"ts"|"jsx"|"tsx")[]} options.include
  * @param {import("esbuild").Loader[]} options.loaders
  * @return {import("rollup").Plugin}
  */

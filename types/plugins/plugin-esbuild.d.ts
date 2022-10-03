@@ -1,4 +1,9 @@
 export function pluginEsbuild({ tsconfig, include, }?: {
-    tsconfig: any;
+    tsconfig: {
+        compilerOptions: {
+            jsxImportSource: string;
+        };
+    };
+    include: string[];
     loaders: import("esbuild").Loader[];
 }): import("rollup").Plugin;
