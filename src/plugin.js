@@ -1,4 +1,3 @@
-import { fileURLToPath } from "url";
 import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
 import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
 import { pluginVitest } from "./plugins/plugin-vitest.js";
