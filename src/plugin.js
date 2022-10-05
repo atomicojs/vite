@@ -6,6 +6,11 @@ import { pluginStorybook } from "./plugins/plugin-storybook.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
+ * @param {object} options
+ * @param {boolean} [options.jsx]
+ * @param {{minify?:boolean,postcss?:boolean}} [options.cssLiterals]
+ * @param {string} [options.tsconfigSrc]
+ * @param {string[]} [options.storybook]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -15,7 +20,7 @@ export default ({
         postcss: false,
     },
     tsconfigSrc = process.cwd() + "/tsconfig.json",
-    storybook = false,
+    storybook,
 } = {}) => {
     const tsconfig = getTsConfig(tsconfigSrc);
 
@@ -89,7 +94,7 @@ export default ({
     }
 
     if (storybook) {
-        plugins.unshift(pluginStorybook());
+        plugins.unshift(pluginStorybook(storybook));
     }
 
     return plugins;

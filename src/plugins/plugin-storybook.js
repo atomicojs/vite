@@ -1,20 +1,23 @@
 import MagicString from "magic-string";
 import * as acornWalk from "acorn-walk";
+import micromatch from "micromatch";
 import { isJsx } from "./utils.js";
 
-const reactId = "\x00react/jsx-dev-runtime";
+const reactId = "\x00react/jsx-";
+
 /**
+ * @param {string[]} expression
  * @returns {import("rollup").Plugin}
  */
-export function pluginStorybook() {
+export function pluginStorybook(expression) {
     return {
         resolveId(id) {
-            if (id === reactId) {
+            if (id.startsWith(reactId)) {
                 return { id };
             }
         },
         transform(code, id) {
-            if (!isJsx(id)) return;
+            if (!isJsx(id) && micromatch([id], expression)) return;
             /**
              * @type {{[index:string]:{start:number,end:number,raw:string}}}
              */
@@ -30,18 +33,15 @@ export function pluginStorybook() {
                 },
             });
 
-            if (
-                imports[reactId] &&
-                Object.keys(imports).some(
-                    (name) => name === "atomico" || name.startsWith("atomico/")
-                )
-            ) {
+            const entries = Object.entries(imports).filter(([name]) =>
+                name.startsWith(reactId)
+            );
+
+            if (entries.length) {
                 const source = new MagicString(code);
 
-                source.overwrite(
-                    imports[reactId].start,
-                    imports[reactId].end,
-                    `"atomico/jsx-runtime"`
+                entries.forEach(([, { start, end }]) =>
+                    source.overwrite(start, end, `"atomico/jsx-runtime"`)
                 );
 
                 return {
