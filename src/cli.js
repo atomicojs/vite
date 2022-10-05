@@ -2,9 +2,10 @@
 import { build } from "vite";
 import glob from "fast-glob";
 import cac from "cac";
-import { parse } from "path";
+import { getModules } from "@atomico/exports/utils";
+import { readFile } from "fs/promises";
 
-const cli = cac("devserver").version("0.6.0");
+const cli = cac("devserver").version("2.0.0");
 
 cli.command("<...files>", "Build files")
     .option("--minify", "minify the code output")
@@ -24,11 +25,23 @@ cli.command("<...files>", "Build files")
         async (src, { minify, watch, dist = "lib", target = "esnext" }) => {
             const files = await glob(src, {
                 ignore: [
+                    "node_modules",
                     "**/_*/*",
-                    "**/*.*.{js,jsx,ts,tsx,mjs}",
+                    "**/*.{test,spec}.{js,jsx,ts,tsx,mjs}",
                     "**/_*.{js,jsx,ts,tsx,mjs}",
                 ],
             });
+
+            /**
+             * @type {{dependencies:{[index:string]:string}}}
+             */
+            const pkg = JSON.parse(
+                await readFile(process.cwd() + "/package.json", "utf8")
+            );
+
+            const dependencies = pkg.dependencies
+                ? Object.keys(pkg.dependencies)
+                : [];
 
             await build({
                 build: {
@@ -37,10 +50,10 @@ cli.command("<...files>", "Build files")
                     target,
                     outDir: dist,
                     rollupOptions: {
-                        input: files.reduce(
-                            (files, file) => ({
+                        input: getModules(files).reduce(
+                            (files, [name, file]) => ({
                                 ...files,
-                                [parse(file).name]: file,
+                                [name]: file,
                             }),
                             {}
                         ),
@@ -49,6 +62,12 @@ cli.command("<...files>", "Build files")
                                 return `${chunk.name}.js`;
                             },
                         },
+                        external: (source) =>
+                            dependencies.some(
+                                (dep) =>
+                                    dep === source ||
+                                    source.startsWith(dep + "/")
+                            ),
                     },
                 },
             });
