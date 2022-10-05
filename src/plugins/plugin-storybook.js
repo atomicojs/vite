@@ -3,7 +3,7 @@ import * as acornWalk from "acorn-walk";
 import micromatch from "micromatch";
 import { isJsx } from "./utils.js";
 
-const reactId = "\x00react/jsx-";
+const reactId = "react/jsx-";
 
 /**
  * @param {string[]} expression
@@ -11,11 +11,6 @@ const reactId = "\x00react/jsx-";
  */
 export function pluginStorybook(expression) {
     return {
-        resolveId(id) {
-            if (id.startsWith(reactId)) {
-                return { id };
-            }
-        },
         transform(code, id) {
             if (!isJsx(id) && micromatch([id], expression)) return;
             /**
@@ -40,9 +35,15 @@ export function pluginStorybook(expression) {
             if (entries.length) {
                 const source = new MagicString(code);
 
-                entries.forEach(([, { start, end }]) =>
-                    source.overwrite(start, end, `"atomico/jsx-runtime"`)
-                );
+                entries.forEach(([, { start, end }]) => {
+                    const value = code
+                        .slice(start, end)
+                        .replace(
+                            /react\/jsx(-dev){0,1}-runtime/,
+                            "atomico/jsx-runtime"
+                        );
+                    source.overwrite(start, end, value);
+                });
 
                 return {
                     code: source.toString(),
