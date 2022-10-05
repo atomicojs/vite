@@ -12,6 +12,7 @@ cli.command("<...files>", "Build files")
     .option("--minify", "minify the code output")
     .option("--watch", "watch directory changes")
     .option("--dist <dist>", "change the output directory (default: lib)")
+    .option("--sourcemap", "enable the use of sourcemap")
     .option("--target <target>", "minify the code output (default: esnext)")
     .action(
         /**
@@ -22,8 +23,12 @@ cli.command("<...files>", "Build files")
          * @param {boolean} options.watch
          * @param {string} options.dist
          * @param {string} options.target
+         * @param {string} options.sourcemap
          */
-        async (src, { minify, watch, dist = "lib", target = "esnext" }) => {
+        async (
+            src,
+            { minify, watch, dist = "lib", target = "esnext", sourcemap }
+        ) => {
             const cwd = process.cwd();
             const files = getModules(
                 await glob(src, {
@@ -59,6 +64,7 @@ cli.command("<...files>", "Build files")
 
             await build({
                 build: {
+                    sourcemap: sourcemap != null,
                     polyfillModulePreload: false,
                     cssCodeSplit: false,
                     minify: minify != null,
