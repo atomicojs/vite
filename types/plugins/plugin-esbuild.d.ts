@@ -4,6 +4,6 @@ export function pluginEsbuild({ tsconfig, include, }?: {
             jsxImportSource: string;
         };
     };
-    include: string[];
+    include: ("js" | "ts" | "jsx" | "tsx")[];
     loaders: import("esbuild").Loader[];
 }): import("rollup").Plugin;

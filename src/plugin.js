@@ -1,6 +1,7 @@
 import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
 import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
 import { pluginVitest } from "./plugins/plugin-vitest.js";
+import { pluginLib } from "./plugins/plugin-lib.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -80,6 +81,10 @@ export default ({
     }
 
     if (process.env.VITEST) plugins.push(pluginEsbuild(pluginVitest));
+
+    if (global.ATOMICO_VITE_CLI) {
+        plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));
+    }
 
     return plugins;
 };
