@@ -2,6 +2,7 @@ import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
 import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
 import { pluginVitest } from "./plugins/plugin-vitest.js";
 import { pluginLib } from "./plugins/plugin-lib.js";
+import { pluginStorybook } from "./plugins/plugin-storybook.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -14,6 +15,7 @@ export default ({
         postcss: false,
     },
     tsconfigSrc = process.cwd() + "/tsconfig.json",
+    storybook = false,
 } = {}) => {
     const tsconfig = getTsConfig(tsconfigSrc);
 
@@ -84,6 +86,10 @@ export default ({
 
     if (global.ATOMICO_VITE_CLI) {
         plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));
+    }
+
+    if (storybook) {
+        plugins.unshift(pluginStorybook());
     }
 
     return plugins;
