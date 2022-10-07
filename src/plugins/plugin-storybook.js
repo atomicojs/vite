@@ -1,7 +1,6 @@
 import MagicString from "magic-string";
 import * as acornWalk from "acorn-walk";
-import micromatch from "micromatch";
-import { isJsx } from "./utils.js";
+import { isJsx, tsMatch } from "./utils.js";
 
 const reactId = "react/jsx-";
 
@@ -12,7 +11,8 @@ const reactId = "react/jsx-";
 export function pluginStorybook(expression) {
     return {
         transform(code, id) {
-            if (!isJsx(id) && micromatch([id], expression)) return;
+            if (!isJsx(id)) return;
+            if (!tsMatch(id, expression)) return;
             /**
              * @type {{[index:string]:{start:number,end:number,raw:string}}}
              */
