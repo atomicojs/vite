@@ -63,3 +63,19 @@ export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts)$/.test(id);
 export const isJsx = (id) => /\.(tsx|jsx)$/.test(id);
 
 export const isTestJs = (id) => /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
+
+/***
+ * @param {string} id
+ * @param {string[]} include
+ */
+export const tsMatch = (id, include) =>
+    include
+        .map((path) =>
+            RegExp(
+                path
+                    .replace(/\.$/g, "\\.")
+                    .replace(/\/\*$/, "/[^/]+")
+                    .replace(/\*\*\//g, "([^\\/]+/){0,}") + "$"
+            )
+        )
+        .some((reg) => reg.test(id));
