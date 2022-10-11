@@ -11,6 +11,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {{minify?:boolean,postcss?:boolean}} [options.cssLiterals]
  * @param {string} [options.tsconfigSrc]
  * @param {string[]} [options.storybook]
+ * @param {boolean} [options.vitest]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -21,6 +22,7 @@ export default ({
     },
     tsconfigSrc = process.cwd() + "/tsconfig.json",
     storybook,
+    vitest,
 } = {}) => {
     const tsconfig = getTsConfig(tsconfigSrc);
 
@@ -87,7 +89,7 @@ export default ({
         plugins.push(pluginEsbuild({ tsconfig }));
     }
 
-    if (process.env.VITEST) plugins.push(pluginVitest());
+    if (process.env.VITEST && vitest !== false) plugins.push(pluginVitest());
 
     if (global.ATOMICO_VITE_CLI) {
         plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));

@@ -12,6 +12,7 @@ export default defineConfig({
     plugins: [
         ...plugin({
             cssLiterals: { minify: true, postcss: true },
+            vitest: false,
         }),
     ],
 });
