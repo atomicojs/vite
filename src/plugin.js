@@ -87,7 +87,7 @@ export default ({
         plugins.push(pluginEsbuild({ tsconfig }));
     }
 
-    if (process.env.VITEST) plugins.push(pluginEsbuild(pluginVitest));
+    if (process.env.VITEST) plugins.push(pluginVitest());
 
     if (global.ATOMICO_VITE_CLI) {
         plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));
