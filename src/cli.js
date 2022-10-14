@@ -5,6 +5,7 @@ import cac from "cac";
 import { readFile } from "fs/promises";
 import { getModules } from "@atomico/exports/utils";
 import { join, normalize } from "path";
+import { hash } from "@uppercod/hash";
 
 const cli = cac("devserver").version("2.0.0");
 
@@ -77,11 +78,11 @@ cli.command("<...files>", "Build files")
                         output: {
                             format: "es",
                             preserveModules: false,
-                            chunkFileNames({ facadeModuleId }) {
+                            chunkFileNames({ facadeModuleId, ...data }) {
                                 const id = normalize(facadeModuleId);
                                 return filesAbsolute[id]
                                     ? `${filesAbsolute[id]}.js`
-                                    : "";
+                                    : `chunks/${hash(id)}.js`;
                             },
                         },
                         external: (source) => {
