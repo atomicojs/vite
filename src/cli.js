@@ -52,15 +52,16 @@ cli.command("<...files>", "Build files")
             );
 
             /**
-             * @type {{dependencies:{[index:string]:string}}}
+             * @type {{dependencies:{[index:string]:string}, peerDependencies:{[index:string]:string}}}
              */
             const pkg = JSON.parse(
                 await readFile(cwd + "/package.json", "utf8")
             );
 
-            const dependencies = pkg.dependencies
-                ? Object.keys(pkg.dependencies)
-                : [];
+            const externals = Object.keys({
+                ...pkg?.dependencies,
+                ...pkg?.peerDependencies,
+            });
 
             await build({
                 build: {
@@ -84,7 +85,7 @@ cli.command("<...files>", "Build files")
                             },
                         },
                         external: (source) => {
-                            return dependencies.some(
+                            return externals.some(
                                 (dep) =>
                                     dep === source ||
                                     source.startsWith(dep + "/")
