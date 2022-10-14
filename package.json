@@ -23,7 +23,7 @@
         "start": "vite --force",
         "types": "tsc",
         "test": "npm run build && vitest run",
-        "check:cli": "node src/cli.js example/**.{js,ts,jsx,tsx}",
+        "check:cli": "node src/cli.js example/**/*.{js,ts,jsx,tsx}",
         "build": "rm -rf tests/build  && vite build --outDir tests/build",
         "build:expect": "vite build --outDir tests/expect",
         "prepublishOnly": "npm run types && npm run test"
