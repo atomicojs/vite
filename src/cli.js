@@ -36,7 +36,7 @@ cli.command("<...files>", "Build files")
                     ignore: [
                         "node_modules",
                         "**/_*/*",
-                        "**/*.{test,spec}.{js,jsx,ts,tsx,mjs}",
+                        "**/*.{test,spec,stories}.{js,jsx,ts,tsx,mjs}",
                         "**/_*.{js,jsx,ts,tsx,mjs}",
                     ],
                 })
