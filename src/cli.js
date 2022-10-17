@@ -6,7 +6,7 @@ import { readFile } from "fs/promises";
 import { getModules } from "@atomico/exports/utils";
 import { join, normalize } from "path";
 import { hash } from "@uppercod/hash";
-import { isJs } from "./plugins/utils";
+import { isJs } from "./plugins/utils.js";
 
 const cli = cac("devserver").version("2.2.1");
 
