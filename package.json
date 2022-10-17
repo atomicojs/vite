@@ -1,7 +1,7 @@
 {
     "name": "@atomico/vite",
     "description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "type": "module",
     "main": "./src/plugin.js",
     "types": "./types/plugin.d.ts",
@@ -65,6 +65,6 @@
     },
     "bin": {
         "atomico-vite": "./src/cli.js",
-        "atomico:lib": "./src/cli.js"
+        "library": "./src/cli.js"
     }
 }

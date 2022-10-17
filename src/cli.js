@@ -6,8 +6,9 @@ import { readFile } from "fs/promises";
 import { getModules } from "@atomico/exports/utils";
 import { join, normalize } from "path";
 import { hash } from "@uppercod/hash";
+import { isJs } from "./plugins/utils";
 
-const cli = cac("devserver").version("2.0.0");
+const cli = cac("devserver").version("2.2.1");
 
 cli.command("<...files>", "Build files")
     .option("--minify", "minify the code output")
@@ -32,14 +33,16 @@ cli.command("<...files>", "Build files")
         ) => {
             const cwd = process.cwd();
             const files = getModules(
-                await glob(src, {
-                    ignore: [
-                        "node_modules",
-                        "**/_*/*",
-                        "**/*.{test,spec,stories}.{js,jsx,ts,tsx,mjs}",
-                        "**/_*.{js,jsx,ts,tsx,mjs}",
-                    ],
-                })
+                (
+                    await glob(src, {
+                        ignore: [
+                            "node_modules",
+                            "**/_*/*",
+                            "**/*.{test,spec,stories}.{js,jsx,ts,tsx,mjs}",
+                            "**/_*.{js,jsx,ts,tsx,mjs}",
+                        ],
+                    })
+                ).filter(isJs)
             );
 
             global.ATOMICO_VITE_CLI = files;
