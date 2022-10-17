@@ -64,6 +64,7 @@
         "singleQuote": false
     },
     "bin": {
-        "atomico-vite": "./src/cli.js"
+        "atomico-vite": "./src/cli.js",
+        "atomico:lib": "./src/cli.js"
     }
 }
