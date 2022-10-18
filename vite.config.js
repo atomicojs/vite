@@ -13,6 +13,10 @@ export default defineConfig({
         ...plugin({
             cssLiterals: { minify: true, postcss: true },
             vitest: false,
+            customElements: {
+                prefix: "a",
+                define: ["custom-elements/**/*"],
+            },
         }),
     ],
 });

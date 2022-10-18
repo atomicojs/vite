@@ -2,14 +2,20 @@ import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
 import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
 import { pluginVitest } from "./plugins/plugin-vitest.js";
 import { pluginLib } from "./plugins/plugin-lib.js";
+import { pluginCustomElement } from "./plugins/plugin-custom-element.js";
 import { pluginStorybook } from "./plugins/plugin-storybook.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
  * @param {object} options
  * @param {boolean} [options.jsx]
- * @param {{minify?:boolean,postcss?:boolean}} [options.cssLiterals]
+ * @param {object} [options.cssLiterals]
+ * @param {boolean} [options.cssLiterals.minify]
+ * @param {boolean} [options.cssLiterals.postcss]
  * @param {string} [options.tsconfigSrc]
+ * @param {object} [options.customElements]
+ * @param {string} [options.customElements.prefix]
+ * @param {string[]} [options.customElements.define]
  * @param {string[]} [options.storybook]
  * @param {boolean} [options.vitest]
  * @returns {import("vite").Plugin[]}
@@ -23,6 +29,7 @@ export default ({
     tsconfigSrc = process.cwd() + "/tsconfig.json",
     storybook,
     vitest,
+    customElements,
 } = {}) => {
     const tsconfig = getTsConfig(tsconfigSrc);
 
@@ -93,6 +100,10 @@ export default ({
 
     if (global.ATOMICO_VITE_CLI) {
         plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));
+    }
+
+    if (customElements) {
+        plugins.push(pluginCustomElement(customElements));
     }
 
     if (storybook) {
