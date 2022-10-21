@@ -29,8 +29,10 @@ export const pluginCustomElement = (options) => ({
                 }
             },
             ExportNamedDeclaration(node) {
-                if (!isAtomico) return;
+                if (!isAtomico || !node.declaration) return;
+
                 const { type } = node.declaration;
+
                 if (
                     type === "VariableDeclaration" &&
                     node?.declaration?.declarations?.[0]?.init?.callee?.name ===
