@@ -82,7 +82,9 @@ cli.command("<...files>", "Build files")
                             format: "es",
                             preserveModules: false,
                             chunkFileNames({ facadeModuleId, ...data }) {
-                                const id = normalize(facadeModuleId);
+                                const id = facadeModuleId
+                                    ? normalize(facadeModuleId)
+                                    : JSON.stringify(data);
                                 return filesAbsolute[id]
                                     ? `${filesAbsolute[id]}.js`
                                     : `chunks/${hash(id)}.js`;
