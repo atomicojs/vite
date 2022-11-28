@@ -21,35 +21,45 @@ const cache = {};
  */
 export const getTsConfig = (url) => {
     if (cache[url]) return cache[url];
-    /**
-     * @type {TsConfig}
-     */
-    let currentConfig = {};
+    try {
+        /**
+         * @type {TsConfig}
+         */
+        let currentConfig = {};
 
-    /**
-     * @type {TsConfig}
-     */
-    let { extends: extendsFile, include, compilerOptions } = require(url) || {};
+        /**
+         * @type {TsConfig}
+         */
+        let {
+            extends: extendsFile,
+            include,
+            compilerOptions,
+        } = require(url) || {};
 
-    if (extendsFile) {
-        if (extendsFile.startsWith(".")) {
-            extendsFile = new URL(extendsFile, url).href;
+        if (extendsFile) {
+            if (extendsFile.startsWith(".")) {
+                extendsFile = new URL(extendsFile, url).href;
+            }
+            currentConfig = {
+                ...getTsConfig(extendsFile),
+            };
         }
+
         currentConfig = {
-            ...getTsConfig(extendsFile),
+            ...currentConfig,
+            include,
+            compilerOptions: {
+                ...currentConfig.compilerOptions,
+                ...compilerOptions,
+            },
         };
+
+        return (cache[url] = currentConfig);
+    } catch {
+        throw new Error(
+            `@atomico/vite requires a tsconfig to work, if you don't have one you can install @atomico/tsconfig and extend it into a local tsconfig.json file.\n    File not Found: ${url}`
+        );
     }
-
-    currentConfig = {
-        ...currentConfig,
-        include,
-        compilerOptions: {
-            ...currentConfig.compilerOptions,
-            ...compilerOptions,
-        },
-    };
-
-    return (cache[url] = currentConfig);
 };
 
 /**

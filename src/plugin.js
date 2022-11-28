@@ -12,7 +12,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {object} [options.cssLiterals]
  * @param {boolean} [options.cssLiterals.minify]
  * @param {boolean} [options.cssLiterals.postcss]
- * @param {string} [options.tsconfigSrc]
+ * @param {string} [options.tsconfig]
  * @param {object} [options.customElements]
  * @param {string} [options.customElements.prefix]
  * @param {string[]} [options.customElements.define]
@@ -26,12 +26,12 @@ export default ({
         minify: false,
         postcss: false,
     },
-    tsconfigSrc = process.cwd() + "/tsconfig.json",
+    tsconfig: tsconfigSrc = "tsconfig.json",
     storybook,
     vitest,
     customElements,
 } = {}) => {
-    const tsconfig = getTsConfig(tsconfigSrc);
+    let tsconfig = getTsConfig(process.cwd() + "/" + tsconfigSrc);
 
     const files = {};
 
