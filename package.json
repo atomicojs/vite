@@ -47,7 +47,7 @@
         "@atomico/postcss-tokens": "^1.7.0",
         "@atomico/tsconfig": "^1.0.0",
         "@types/node": "^18.11.9",
-        "atomico": "*",
+        "atomico": "^1.68.0",
         "fast-glob": "^3.2.11",
         "normalize.css": "^8.0.1",
         "postcss-import": "^14.1.0",
