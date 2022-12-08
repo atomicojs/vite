@@ -8,6 +8,7 @@ import { tsMatch } from "./utils.js";
  * @return {import("rollup").Plugin}
  */
 export const pluginCustomElement = (options) => ({
+    name: "atomico-plugin-custom-element",
     async transform(code, id) {
         if (!tsMatch(id, options.define)) return;
 

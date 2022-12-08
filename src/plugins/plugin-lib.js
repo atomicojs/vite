@@ -4,6 +4,7 @@ const virtual = ` atomico-vite-virtual`;
  */
 export function pluginLib(files) {
     return {
+        name: "atomico-plugin-lib",
         resolveId(id) {
             if (id === virtual) return { id };
         },

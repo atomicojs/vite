@@ -18,6 +18,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {string[]} [options.customElements.define]
  * @param {string[]} [options.storybook]
  * @param {boolean} [options.vitest]
+ * @param {boolean} [options.unplugin]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -30,6 +31,7 @@ export default ({
     storybook,
     vitest,
     customElements,
+    unplugin,
 } = {}) => {
     let tsconfig = getTsConfig(process.cwd() + "/" + tsconfigSrc);
 
@@ -43,43 +45,48 @@ export default ({
     /**
      * @type {import("vite").Plugin[]}
      */
-    const plugins = [
-        {
-            name: "atomico-plugin",
-            configureServer(server) {
-                watcher = server.watcher;
-                /**
-                 * @param {string} path
-                 */
-                const reload = (path) => {
-                    server.ws.send({
-                        type: "full-reload",
-                        path,
-                    });
-                };
+    const plugins = unplugin
+        ? []
+        : [
+              {
+                  name: "atomico-plugin",
+                  configureServer(server) {
+                      watcher = server.watcher;
+                      /**
+                       * @param {string} path
+                       */
+                      const reload = (path) => {
+                          server.ws.send({
+                              type: "full-reload",
+                              path,
+                          });
+                      };
 
-                watcher.on("change", (file) => files[file] && reload(file));
-            },
-            config(config, { command }) {
-                if (jsx && tsconfig?.compilerOptions?.jsxImportSource) {
-                    return {
-                        esbuild: {
-                            jsx: "automatic",
-                            jsxImportSource:
-                                tsconfig.compilerOptions.jsxImportSource,
-                        },
-                        ...(command === "serve"
-                            ? {
-                                  optimizeDeps: {
-                                      exclude: ["atomico/jsx-runtime"],
-                                  },
-                              }
-                            : {}),
-                    };
-                }
-            },
-        },
-    ];
+                      watcher.on(
+                          "change",
+                          (file) => files[file] && reload(file)
+                      );
+                  },
+                  config(config, { command }) {
+                      if (jsx && tsconfig?.compilerOptions?.jsxImportSource) {
+                          return {
+                              esbuild: {
+                                  jsx: "automatic",
+                                  jsxImportSource:
+                                      tsconfig.compilerOptions.jsxImportSource,
+                              },
+                              ...(command === "serve"
+                                  ? {
+                                        optimizeDeps: {
+                                            exclude: ["atomico/jsx-runtime"],
+                                        },
+                                    }
+                                  : {}),
+                          };
+                      }
+                  },
+              },
+          ];
 
     if (cssLiterals)
         plugins.push(

@@ -10,6 +10,7 @@ const reactId = "react/jsx-";
  */
 export function pluginStorybook(expression) {
     return {
+        name: "atomico-plugin-storybook",
         transform(code, id) {
             if (!isJsx(id)) return;
             if (!tsMatch(id, expression)) return;
