@@ -1,6 +1,6 @@
 import MagicString from "magic-string";
 import * as acornWalk from "acorn-walk";
-import { tsMatch } from "./utils.js";
+import { tsMatch, isJs } from "./utils.js";
 /**
  * @param {object} options
  * @param {string} options.prefix
@@ -10,6 +10,7 @@ import { tsMatch } from "./utils.js";
 export const pluginCustomElement = (options) => ({
     name: "atomico-plugin-custom-element",
     async transform(code, id) {
+        if (!isJs(id)) return;
         if (!tsMatch(id, options.define)) return;
 
         const ast = this.parse(code);

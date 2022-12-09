@@ -4,7 +4,7 @@ import postcss from "postcss";
 import postcssLoadConfig from "postcss-load-config";
 import postcssImported from "@atomico/postcss-imported";
 import MagicString from "magic-string";
-import { getExtension } from "./utils.js";
+import { getExtension, isJs } from "./utils.js";
 import { fileURLToPath } from "url";
 /**
  * @type {Promise<import("postcss-load-config").Result>}
@@ -25,6 +25,7 @@ export const pluginCssLiterals = ({
 } = {}) => ({
     name: "atomico-plugin-css-literals",
     async transform(code, id) {
+        if (!isJs(id)) return;
         const loader = getExtension(id);
 
         if (!include.includes(loader)) return;
