@@ -1,7 +1,7 @@
 {
     "name": "@atomico/vite",
     "description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "type": "module",
     "main": "./src/plugin.js",
     "types": "./types/plugin.d.ts",
@@ -45,6 +45,7 @@
     },
     "devDependencies": {
         "@atomico/postcss-tokens": "^1.7.0",
+        "@atomico/react": "^2.6.0",
         "@atomico/tsconfig": "^1.0.0",
         "@types/node": "^18.11.9",
         "atomico": "^1.68.0",
