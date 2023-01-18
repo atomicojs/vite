@@ -66,11 +66,12 @@ export const getTsConfig = (url) => {
  * @param {string} id
  * @returns {string|undefined}
  */
-export const getExtension = (id) => (id.match(/\.(\w+)$/) || []).at(1);
+export const getExtension = (id) =>
+    (id.match(/\.(\w+)(\?.+){0,1}$/) || []).at(1);
 
-export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts)$/.test(id);
+export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts)(\?.+){0,1}$/.test(id);
 
-export const isJsx = (id) => /\.(tsx|jsx)$/.test(id);
+export const isJsx = (id) => /\.(tsx|jsx(\?.+){0,1})$/.test(id);
 
 export const isTestJs = (id) => /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
 

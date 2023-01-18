@@ -1,9 +1,10 @@
 import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
-import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
-import { pluginVitest } from "./plugins/plugin-vitest.js";
-import { pluginLib } from "./plugins/plugin-lib.js";
 import { pluginCustomElement } from "./plugins/plugin-custom-element.js";
+import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
+import { pluginLib } from "./plugins/plugin-lib.js";
+import { pluginRuntimeWrappers } from "./plugins/plugin-runtime-wrappers.js";
 import { pluginStorybook } from "./plugins/plugin-storybook.js";
+import { pluginVitest } from "./plugins/plugin-vitest.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -12,6 +13,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {object} [options.cssLiterals]
  * @param {boolean} [options.cssLiterals.minify]
  * @param {boolean} [options.cssLiterals.postcss]
+ * @param {boolean} [options.runtimeWrappers]
  * @param {string} [options.tsconfig]
  * @param {object} [options.customElements]
  * @param {string} [options.customElements.prefix]
@@ -32,6 +34,7 @@ export default ({
     vitest,
     customElements,
     unplugin,
+    runtimeWrappers,
 } = {}) => {
     let tsconfig = getTsConfig(process.cwd() + "/" + tsconfigSrc);
 
@@ -115,6 +118,10 @@ export default ({
 
     if (storybook) {
         plugins.unshift(pluginStorybook(storybook));
+    }
+
+    if (runtimeWrappers) {
+        plugins.unshift(pluginRuntimeWrappers());
     }
 
     return plugins;
