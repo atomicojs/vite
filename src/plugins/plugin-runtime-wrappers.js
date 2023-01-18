@@ -62,7 +62,6 @@ export const pluginRuntimeWrappers = () => ({
                 .flat(10)
                 .join("\n");
 
-            console.log(code);
             return {
                 code,
                 map: "",
