@@ -2,13 +2,13 @@
 import { build } from "vite";
 import glob from "fast-glob";
 import cac from "cac";
-import { readFile } from "fs/promises";
+import { readFile, writeFile, unlink } from "fs/promises";
 import { getModules } from "@atomico/exports/utils";
 import { join, normalize } from "path";
 import { hash } from "@uppercod/hash";
 import { isJs } from "./plugins/utils.js";
 
-const cli = cac("devserver").version("2.2.1");
+const cli = cac("@atomico/vite").version("2.2.1");
 
 cli.command("<...files>", "Build files")
     .option("--minify", "minify the code output")
@@ -67,39 +67,50 @@ cli.command("<...files>", "Build files")
                 ...pkg?.peerDependencies,
             });
 
-            await build({
-                build: {
-                    sourcemap: sourcemap != null,
-                    polyfillModulePreload: false,
-                    cssCodeSplit: false,
-                    minify: minify != null,
-                    watch,
-                    target,
-                    outDir: dist,
-                    rollupOptions: {
-                        input: [],
-                        output: {
-                            format: "es",
-                            preserveModules: false,
-                            chunkFileNames({ facadeModuleId, ...data }) {
-                                const id = facadeModuleId
-                                    ? normalize(facadeModuleId)
-                                    : JSON.stringify(data);
-                                return filesAbsolute[id]
-                                    ? `${filesAbsolute[id]}.js`
-                                    : `chunks/${hash(id)}.js`;
+            const tmp = process.cwd() + `/lib-${Date.now()}.js`;
+
+            await writeFile(
+                tmp,
+                files.map(([, source]) => `import("./${source}");`)
+            );
+
+            try {
+                await build({
+                    build: {
+                        sourcemap: sourcemap != null,
+                        polyfillModulePreload: false,
+                        cssCodeSplit: false,
+                        minify: minify != null,
+                        watch,
+                        target,
+                        outDir: dist,
+                        rollupOptions: {
+                            input: [tmp],
+                            output: {
+                                format: "es",
+                                preserveModules: false,
+                                chunkFileNames({ facadeModuleId, ...data }) {
+                                    const id = facadeModuleId
+                                        ? normalize(facadeModuleId)
+                                        : JSON.stringify(data);
+                                    return filesAbsolute[id]
+                                        ? `${filesAbsolute[id]}.js`
+                                        : `chunks/${hash(id)}.js`;
+                                },
+                            },
+                            external: (source) => {
+                                return externals.some(
+                                    (dep) =>
+                                        dep === source ||
+                                        source.startsWith(dep + "/")
+                                );
                             },
                         },
-                        external: (source) => {
-                            return externals.some(
-                                (dep) =>
-                                    dep === source ||
-                                    source.startsWith(dep + "/")
-                            );
-                        },
                     },
-                },
-            });
+                });
+            } finally {
+                await unlink(tmp);
+            }
         }
     );
 
