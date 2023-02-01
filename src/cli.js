@@ -45,7 +45,9 @@ cli.command("<...files>", "Build files")
                 ).filter(isJs)
             );
 
-            global.ATOMICO_VITE_CLI = files;
+            const tmp = process.cwd() + `/lib-${Date.now()}.js`;
+
+            global.ATOMICO_VITE_CLI = { files, tmp };
 
             const filesAbsolute = files.reduce(
                 (filesAbsolute, [name, file]) => ({
@@ -67,8 +69,6 @@ cli.command("<...files>", "Build files")
                 ...pkg?.peerDependencies,
             });
 
-            const tmp = process.cwd() + `/lib-${Date.now()}.js`;
-
             await writeFile(
                 tmp,
                 files.map(([, source]) => `import("./${source}");`)
@@ -78,6 +78,7 @@ cli.command("<...files>", "Build files")
                 await build({
                     build: {
                         sourcemap: sourcemap != null,
+                        modulePreload: false,
                         polyfillModulePreload: false,
                         cssCodeSplit: false,
                         minify: minify != null,
