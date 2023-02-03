@@ -5,6 +5,7 @@ import { tsMatch, isJs } from "./utils.js";
  * @param {object} options
  * @param {string} options.prefix
  * @param {string[]} options.define
+ * @param {boolean} options.onlyExport
  * @return {import("rollup").Plugin}
  */
 export const pluginCustomElement = (options) => ({
@@ -51,11 +52,12 @@ export const pluginCustomElement = (options) => ({
             const source = new MagicString(code);
             const { prefix = "" } = options;
 
-            const declarations = [...customElements].map(
-                (name) =>
-                    `customElements.define("${tagName(
-                        prefix + name
-                    )}", ${name});`
+            const declarations = [...customElements].map((name) =>
+                options.onlyExport
+                    ? `${name}.export = "${name}";`
+                    : `customElements.define("${tagName(
+                          prefix + name
+                      )}", ${name});`
             );
 
             source.append(declarations.join("\n"));

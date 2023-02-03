@@ -118,6 +118,12 @@ export default ({
 
     if (storybook) {
         plugins.unshift(pluginStorybook(storybook));
+        plugins.push(
+            pluginCustomElement({
+                define: ["**/*"],
+                onlyExport: true,
+            })
+        );
     }
 
     if (runtimeWrappers) {
