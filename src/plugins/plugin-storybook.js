@@ -21,11 +21,14 @@ export function pluginStorybook(expression) {
 
             acornWalk.ancestor(this.parse(code), {
                 ImportDeclaration(node) {
-                    imports[node.source.value] = {
+                    imports[node.source.value] =
+                        imports[node.source.value] || [];
+
+                    imports[node.source.value].push({
                         start: node.start,
                         end: node.end,
                         raw: node.source.raw,
-                    };
+                    });
                 },
             });
 
@@ -36,15 +39,18 @@ export function pluginStorybook(expression) {
             if (entries.length) {
                 const source = new MagicString(code);
 
-                entries.forEach(([, { start, end }]) => {
-                    const value = code
-                        .slice(start, end)
-                        .replace(
-                            /react\/jsx(-dev){0,1}-runtime/,
-                            "atomico/jsx-runtime"
-                        );
-                    source.overwrite(start, end, value);
-                });
+                entries.forEach(([, imports]) =>
+                    imports.forEach(({ start, end }) => {
+                        const value = code
+                            .slice(start, end)
+                            .replace(
+                                /react\/jsx(-dev){0,1}-runtime/,
+                                "atomico/jsx-runtime"
+                            );
+
+                        source.overwrite(start, end, value);
+                    })
+                );
 
                 return {
                     code: source.toString(),
