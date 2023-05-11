@@ -103,8 +103,8 @@ cli.command("<...files>", "Build files")
                                     const id = facadeModuleId
                                         ? normalize(facadeModuleId)
                                         : JSON.stringify(data);
-                                    return filesAbsolute[id]
-                                        ? `${filesAbsolute[id]}.js`
+                                    return id in filesAbsolute
+                                        ? `${filesAbsolute[id] || "index"}.js`
                                         : `chunks/${hash(id)}.js`;
                                 },
                             },
