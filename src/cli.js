@@ -7,6 +7,8 @@ import { getModules } from "@atomico/exports/utils";
 import { join, normalize } from "path";
 import { hash } from "@uppercod/hash";
 import { isJs } from "./plugins/utils.js";
+import { fileURLToPath } from "url";
+import { relative } from "path";
 
 const cli = cac("@atomico/vite").version("2.2.1");
 
@@ -45,7 +47,9 @@ cli.command("<...files>", "Build files")
                 ).filter(isJs)
             );
 
-            const tmp = process.cwd() + `/lib-${Date.now()}.js`;
+            const tmp = fileURLToPath(
+                new URL(`../cache/lib-${Date.now()}.js`, import.meta.url)
+            );
 
             global.ATOMICO_VITE_CLI = { files, tmp };
 
@@ -71,7 +75,12 @@ cli.command("<...files>", "Build files")
 
             await writeFile(
                 tmp,
-                files.map(([, source]) => `import("./${source}");`)
+                Object.entries(filesAbsolute).map(
+                    ([absolute]) =>
+                        `import("${relative(tmp, absolute)
+                            .replace(/\\/g, "/")
+                            .replace("../", "")}");`
+                )
             );
 
             try {
@@ -110,7 +119,7 @@ cli.command("<...files>", "Build files")
                     },
                 });
             } finally {
-                await unlink(tmp);
+                // await unlink(tmp);
             }
         }
     );
