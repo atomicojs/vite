@@ -96,9 +96,10 @@ cli.command("<...files>", "Build files")
                         outDir: dist,
                         rollupOptions: {
                             input: [tmp],
+                            treeshake: false,
+                            preserveModules: false,
                             output: {
                                 format: "es",
-                                preserveModules: false,
                                 chunkFileNames({ facadeModuleId, ...data }) {
                                     const id = facadeModuleId
                                         ? normalize(facadeModuleId)
