@@ -18,7 +18,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {object} [options.customElements]
  * @param {string} [options.customElements.prefix]
  * @param {string[]} [options.customElements.define]
- * @param {string[]} [options.storybook]
+ * @param {{include?:string[],fullReload ?: boolean}} [options.storybook]
  * @param {boolean} [options.vitest]
  * @param {boolean} [options.unplugin]
  * @returns {import("vite").Plugin[]}
@@ -67,7 +67,9 @@ export default ({
 
                       watcher.on(
                           "change",
-                          (file) => files[file] && reload(file)
+                          (file) =>
+                              (files[file] || storybook?.fullReload) &&
+                              reload(file)
                       );
                   },
                   config(config, { command }) {
@@ -116,8 +118,8 @@ export default ({
         plugins.push(pluginCustomElement(customElements));
     }
 
-    if (storybook) {
-        plugins.unshift(pluginStorybook(storybook));
+    if (storybook?.include) {
+        plugins.unshift(pluginStorybook(storybook?.include));
         plugins.push(
             pluginCustomElement({
                 define: ["**/*"],
