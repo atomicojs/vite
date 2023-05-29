@@ -4,7 +4,6 @@ import plugin from "./src/plugin.js";
 export default defineConfig({
     build: {
         target: "esnext",
-        polyfillModulePreload: false,
     },
     test: {
         environment: "node",
