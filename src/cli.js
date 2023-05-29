@@ -88,7 +88,6 @@ cli.command("<...files>", "Build files")
                     build: {
                         sourcemap: sourcemap != null,
                         modulePreload: false,
-                        polyfillModulePreload: false,
                         cssCodeSplit: false,
                         minify: minify != null,
                         watch,
