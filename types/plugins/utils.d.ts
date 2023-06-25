@@ -4,6 +4,7 @@ export function getExtension(id: string): string | undefined;
 export function isJs(id: any): boolean;
 export function isJsx(id: any): boolean;
 export function isTestJs(id: any): boolean;
+export function pathToRegExp(path: string): RegExp;
 export function tsMatch(id: string, include: string[]): boolean;
 export type TsConfig = {
     extends?: string;

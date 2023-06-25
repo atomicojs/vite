@@ -10,7 +10,10 @@ declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, 
         prefix?: string;
         define?: string[];
     };
-    storybook?: string[];
+    storybook?: {
+        include?: string[];
+        fullReload?: boolean;
+    };
     vitest?: boolean;
     unplugin?: boolean;
 }): import("vite").Plugin[];
