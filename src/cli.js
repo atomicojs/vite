@@ -15,6 +15,10 @@ const cli = cac("@atomico/vite").version("2.2.1");
 cli.command("<...files>", "Build files")
     .option("--minify", "minify the code output")
     .option("--watch", "watch directory changes")
+    .option(
+        "--all-external",
+        "This flag allows all dependencies to be external"
+    )
     .option("--dist <dist>", "change the output directory (default: lib)")
     .option("--sourcemap", "enable the use of sourcemap")
     .option("--target <target>", "minify the code output (default: esnext)")
@@ -28,10 +32,18 @@ cli.command("<...files>", "Build files")
          * @param {string} options.dist
          * @param {string} options.target
          * @param {string} options.sourcemap
+         * @param {boolean} options.allExternal
          */
         async (
             src,
-            { minify, watch, dist = "lib", target = "esnext", sourcemap }
+            {
+                minify,
+                watch,
+                dist = "lib",
+                target = "esnext",
+                sourcemap,
+                allExternal,
+            }
         ) => {
             const cwd = process.cwd();
             const files = getModules(
@@ -109,6 +121,16 @@ cli.command("<...files>", "Build files")
                                 },
                             },
                             external: (source) => {
+                                // Url and node are external
+                                if (/^(http(s)?|node){0,1}:.+/.test(source))
+                                    return true;
+
+                                // Disk and local files resources are not external
+                                if (/^(\w|file):.+/.test(source)) return false;
+
+                                // All packages are external
+                                if (allExternal) return /^@?\w+/.test(source);
+
                                 return externals.some(
                                     (dep) =>
                                         dep === source ||
