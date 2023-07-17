@@ -1,6 +1,40 @@
 import { createRequire } from "module";
+import { readFileSync } from "fs";
 
 export const require = createRequire(import.meta.url);
+
+/**
+ *
+ * @param {string} url
+ * @returns {TsConfig}
+ */
+export const getTsJsonConfig = (url) => {
+    let path = "";
+    try {
+        path = require.resolve(url);
+    } catch {
+        return {};
+    }
+    return jsonAutoFix(readFileSync(path, "utf8"));
+};
+
+export function jsonAutoFix(content) {
+    try {
+        const json = JSON.parse(content);
+        return json;
+    } catch ({ message }) {
+        let test = message.match(/position (\d+)/);
+        if (test) {
+            const position = Number(test.at(1)) - 1;
+            if (content[position] === "," || /\s+/.test(content[position])) {
+                return jsonAutoFix(
+                    content.slice(0, position) + content.slice(position + 1)
+                );
+            }
+        }
+        throw message;
+    }
+}
 
 /**
  * @typedef { {extends?:string, include?:string[],compilerOptions:TsConfigCompilerOptions} } TsConfig
@@ -34,8 +68,7 @@ export const getTsConfig = (url) => {
             extends: extendsFile,
             include,
             compilerOptions,
-        } = require(url) || {};
-
+        } = getTsJsonConfig(url) || {};
         if (extendsFile) {
             if (extendsFile.startsWith(".")) {
                 extendsFile = new URL(extendsFile, url).href;
@@ -56,9 +89,9 @@ export const getTsConfig = (url) => {
 
         return (cache[url] = currentConfig);
     } catch {
-        throw new Error(
-            `@atomico/vite requires a tsconfig to work, if you don't have one you can install @atomico/tsconfig and extend it into a local tsconfig.json file.\n    File not Found: ${url}`
-        );
+        // throw new Error(
+        //     `@atomico/vite requires a tsconfig to work, if you don't have one you can install @atomico/tsconfig and extend it into a local tsconfig.json file.\n    File not Found: ${url}`
+        // );
     }
 };
 
