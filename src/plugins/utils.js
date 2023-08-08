@@ -115,10 +115,12 @@ export const isTestJs = (id) => /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
  */
 export const pathToRegExp = (path) =>
     RegExp(
-        path
-            .replace(/\.$/g, "\\.")
-            .replace(/\/\*$/, "/[^/]+")
-            .replace(/\*\*\//g, "([^\\/]+/){0,}") + "$"
+        path === "*"
+            ? ".+"
+            : path
+                  .replace(/\.$/g, "\\.")
+                  .replace(/\/\*$/, "/[^/]+")
+                  .replace(/\*\*\//g, "([^\\/]+/){0,}") + "$"
     );
 /***
  * @param {string} id
@@ -131,3 +133,4 @@ export const tsMatch = (id, include) => {
     }
     return include.map(pathToRegExp).some((reg) => reg.test(id));
 };
+

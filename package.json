@@ -40,19 +40,15 @@
         "postcss": "^8.4.17",
         "postcss-load-config": "^4.0.1"
     },
-    "peerDependencies": {
-        "atomico": "*"
-    },
     "devDependencies": {
         "@atomico/postcss-tokens": "^1.7.0",
         "@atomico/react": "^2.6.0",
         "@atomico/tsconfig": "^1.0.0",
         "@types/node": "^18.11.9",
-        "atomico": "^1.68.0",
         "fast-glob": "^3.2.11",
         "normalize.css": "^8.0.1",
         "postcss-import": "^14.1.0",
-        "typescript": "^4.6.3",
+        "typescript": "^5.1.6",
         "vite": "^4.3.9",
         "vitest": "^0.24.1"
     },
@@ -64,7 +60,8 @@
     },
     "prettier": {
         "tabWidth": 4,
-        "singleQuote": false
+        "singleQuote": false,
+        "endOfLine": "crlf"
     },
     "bin": {
         "atomico-vite": "./src/cli.js",
