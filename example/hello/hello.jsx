@@ -37,7 +37,8 @@ hello.styles = css`
         font-weight: bold;
         overflow: hidden;
         color: white;
-        text-shadow: 0px 2vw 4vw var(--hello-shadow-1, magenta),
+        text-shadow:
+            0px 2vw 4vw var(--hello-shadow-1, magenta),
             0px 2vw 1vw var(--hello-shadow-2, tomato);
         opacity: 0.15;
         align-items: flex-end;

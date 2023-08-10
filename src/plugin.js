@@ -69,7 +69,7 @@ export default ({
                           "change",
                           (file) =>
                               (files[file] || storybook?.fullReload) &&
-                              reload(file)
+                              reload(file),
                       );
                   },
                   config(config, { command }) {
@@ -101,7 +101,7 @@ export default ({
                     files[src] = true;
                     if (watcher) watcher.add(src);
                 },
-            })
+            }),
         );
 
     if (jsx) {
@@ -124,7 +124,7 @@ export default ({
             pluginCustomElement({
                 define: ["**/*"],
                 onlyExport: true,
-            })
+            }),
         );
     }
 

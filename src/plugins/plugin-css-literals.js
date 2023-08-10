@@ -87,9 +87,9 @@ export const pluginCssLiterals = ({
                     source.overwrite(
                         start,
                         end,
-                        css.trim().replace(/`/g, "\\`")
+                        css.trim().replace(/`/g, "\\`"),
                     );
-                })
+                }),
         );
 
         for (let file in report) {

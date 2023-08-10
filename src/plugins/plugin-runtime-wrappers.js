@@ -21,7 +21,7 @@ export const pluginRuntimeWrappers = () => ({
                 if (
                     node?.source?.value === "atomico" &&
                     node.specifiers.some(
-                        ({ imported }) => imported.name === "c"
+                        ({ imported }) => imported.name === "c",
                     )
                 ) {
                     isAtomico = true;
@@ -38,7 +38,7 @@ export const pluginRuntimeWrappers = () => ({
                         "c"
                 ) {
                     customElements.add(
-                        node?.declaration?.declarations?.[0]?.id?.name
+                        node?.declaration?.declarations?.[0]?.id?.name,
                     );
                 }
             },
@@ -51,7 +51,7 @@ export const pluginRuntimeWrappers = () => ({
             const code = [
                 `import { auto } from "@atomico/react";`,
                 `import { ${list.map(
-                    (name) => `${name} as _${name}`
+                    (name) => `${name} as _${name}`,
                 )} } from "./${base}";`,
                 list.map((name) => [
                     "",

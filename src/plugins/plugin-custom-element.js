@@ -25,7 +25,7 @@ export const pluginCustomElement = (options) => ({
                 if (
                     node?.source?.value === "atomico" &&
                     node.specifiers.some(
-                        ({ imported }) => imported.name === "c"
+                        ({ imported }) => imported.name === "c",
                     )
                 ) {
                     isAtomico = true;
@@ -42,7 +42,7 @@ export const pluginCustomElement = (options) => ({
                         "c"
                 ) {
                     customElements.add(
-                        node?.declaration?.declarations?.[0]?.id?.name
+                        node?.declaration?.declarations?.[0]?.id?.name,
                     );
                 }
             },
@@ -56,8 +56,8 @@ export const pluginCustomElement = (options) => ({
                 options.onlyExport
                     ? `${name}.export = "${name}";`
                     : `customElements.define("${tagName(
-                          prefix + name
-                      )}", ${name});`
+                          prefix + name,
+                      )}", ${name});`,
             );
 
             source.append(declarations.join("\n"));
@@ -74,6 +74,6 @@ const tagName = (name) =>
     name
         .replace(
             /([a-zA-Z])([A-Z]+)/g,
-            (all, before, after) => `${before}-${after}`
+            (all, before, after) => `${before}-${after}`,
         )
         .toLowerCase();

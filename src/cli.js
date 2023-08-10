@@ -17,7 +17,7 @@ cli.command("<...files>", "Build files")
     .option("--watch", "watch directory changes")
     .option(
         "--all-external",
-        "This flag allows all dependencies to be external"
+        "This flag allows all dependencies to be external",
     )
     .option("--dist <dist>", "change the output directory (default: lib)")
     .option("--sourcemap", "enable the use of sourcemap")
@@ -43,7 +43,7 @@ cli.command("<...files>", "Build files")
                 target = "esnext",
                 sourcemap,
                 allExternal,
-            }
+            },
         ) => {
             const cwd = process.cwd();
             const files = getModules(
@@ -56,11 +56,11 @@ cli.command("<...files>", "Build files")
                             "**/_*.{js,jsx,ts,tsx,mjs}",
                         ],
                     })
-                ).filter(isJs)
+                ).filter(isJs),
             );
 
             const tmp = fileURLToPath(
-                new URL(`../cache/lib-${Date.now()}.js`, import.meta.url)
+                new URL(`../cache/lib-${Date.now()}.js`, import.meta.url),
             );
 
             global.ATOMICO_VITE_CLI = { files, tmp };
@@ -70,14 +70,14 @@ cli.command("<...files>", "Build files")
                     ...filesAbsolute,
                     [join(cwd, file)]: name,
                 }),
-                {}
+                {},
             );
 
             /**
              * @type {{dependencies:{[index:string]:string}, peerDependencies:{[index:string]:string}}}
              */
             const pkg = JSON.parse(
-                await readFile(cwd + "/package.json", "utf8")
+                await readFile(cwd + "/package.json", "utf8"),
             );
 
             const externals = Object.keys({
@@ -91,8 +91,8 @@ cli.command("<...files>", "Build files")
                     ([absolute]) =>
                         `import("${relative(tmp, absolute)
                             .replace(/\\/g, "/")
-                            .replace("../", "")}");`
-                )
+                            .replace("../", "")}");`,
+                ),
             );
 
             try {
@@ -134,7 +134,7 @@ cli.command("<...files>", "Build files")
                                 return externals.some(
                                     (dep) =>
                                         dep === source ||
-                                        source.startsWith(dep + "/")
+                                        source.startsWith(dep + "/"),
                                 );
                             },
                         },
@@ -143,7 +143,7 @@ cli.command("<...files>", "Build files")
             } finally {
                 // await unlink(tmp);
             }
-        }
+        },
     );
 
 cli.help();

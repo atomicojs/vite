@@ -12,7 +12,7 @@ test("compare", async () => {
             filesExpect.map(async (file) => ({
                 content: await readFile(file, "utf8"),
                 name: path.extname(file),
-            }))
+            })),
         )
     ).reduce((files, file) => ({ ...files, [file.name]: file }), {});
 
@@ -21,7 +21,7 @@ test("compare", async () => {
             filesBuild.map(async (file) => ({
                 content: await readFile(file, "utf8"),
                 name: path.extname(file),
-            }))
+            })),
         )
     ).reduce((files, file) => ({ ...files, [file.name]: file }), {});
 

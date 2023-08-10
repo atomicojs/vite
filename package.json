@@ -61,7 +61,7 @@
     "prettier": {
         "tabWidth": 4,
         "singleQuote": false,
-        "endOfLine": "crlf"
+        "endOfLine": "lf"
     },
     "bin": {
         "atomico-vite": "./src/cli.js",

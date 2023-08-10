@@ -33,7 +33,7 @@ export function pluginStorybook(expression) {
             });
 
             const entries = Object.entries(imports).filter(([name]) =>
-                name.startsWith(reactId)
+                name.startsWith(reactId),
             );
 
             if (entries.length) {
@@ -45,11 +45,11 @@ export function pluginStorybook(expression) {
                             .slice(start, end)
                             .replace(
                                 /react\/jsx(-dev){0,1}-runtime/,
-                                "atomico/jsx-runtime"
+                                "atomico/jsx-runtime",
                             );
 
                         source.overwrite(start, end, value);
-                    })
+                    }),
                 );
 
                 return {

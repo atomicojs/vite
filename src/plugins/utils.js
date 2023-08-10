@@ -28,7 +28,7 @@ export function jsonAutoFix(content) {
             const position = Number(test.at(1)) - 1;
             if (content[position] === "," || /\s+/.test(content[position])) {
                 return jsonAutoFix(
-                    content.slice(0, position) + content.slice(position + 1)
+                    content.slice(0, position) + content.slice(position + 1),
                 );
             }
         }
@@ -120,7 +120,7 @@ export const pathToRegExp = (path) =>
             : path
                   .replace(/\.$/g, "\\.")
                   .replace(/\/\*$/, "/[^/]+")
-                  .replace(/\*\*\//g, "([^\\/]+/){0,}") + "$"
+                  .replace(/\*\*\//g, "([^\\/]+/){0,}") + "$",
     );
 /***
  * @param {string} id
@@ -133,4 +133,3 @@ export const tsMatch = (id, include) => {
     }
     return include.map(pathToRegExp).some((reg) => reg.test(id));
 };
-
