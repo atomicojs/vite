@@ -1,7 +1,9 @@
 import MagicString from "magic-string";
 import { isTestJs } from "./utils.js";
 
-const virtualPolyfillVitest = " atomico-polyfill-vitest";
+const virtualModule = "virtual:atomico-polyfill-vitest";
+const virtualModuleId = "\0" + virtualModule;
+
 /**
  *
  * @returns {import("rollup").Plugin}
@@ -13,15 +15,20 @@ export const pluginVitest = () => ({
 
 		const source = new MagicString(code);
 
-		source.prepend(`import "${virtualPolyfillVitest}";`);
+		source.prepend(`import "${virtualModule}";`);
 
 		return {
 			code: source.toString(),
 			map: source.generateDecodedMap(),
 		};
 	},
+	resolveId(id) {
+		if (id === virtualModule) {
+			return virtualModuleId;
+		}
+	},
 	load(id) {
-		if (id === virtualPolyfillVitest) {
+		if (id === virtualModuleId) {
 			return `
             import { beforeEach, afterEach } from "vitest";
             
