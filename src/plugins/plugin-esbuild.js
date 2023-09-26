@@ -9,25 +9,25 @@ import { getExtension, isJsx } from "./utils.js";
  * @return {import("rollup").Plugin}
  */
 export const pluginEsbuild = ({
-    tsconfig = {
-        compilerOptions: { jsxImportSource: "atomico" },
-    },
+	tsconfig = {
+		compilerOptions: { jsxImportSource: "atomico" },
+	},
 } = {}) => ({
-    name: "atomico-plugin-esbuild",
-    async transform(code, id) {
-        if (!isJsx(id)) return;
+	name: "atomico-plugin-esbuild",
+	async transform(code, id) {
+		if (!isJsx(id)) return;
 
-        const loader = getExtension(id);
+		const loader = getExtension(id);
 
-        const { compilerOptions } = tsconfig;
+		const { compilerOptions } = tsconfig;
 
-        const result = await transformEsbuild(code, {
-            jsx: "automatic",
-            jsxImportSource: compilerOptions.jsxImportSource,
-            loader,
-            sourcemap: true,
-        });
+		const result = await transformEsbuild(code, {
+			jsx: "automatic",
+			jsxImportSource: compilerOptions.jsxImportSource,
+			loader,
+			sourcemap: true,
+		});
 
-        return result;
-    },
+		return result;
+	},
 });
