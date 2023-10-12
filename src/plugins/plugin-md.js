@@ -9,19 +9,8 @@ const virtualModuleId = "\0" + virtualModule;
  * @returns {import("vite").Plugin}
  */
 export const pluginVitest = () => ({
-	name: "atomico-plugin-vitest",
-	transform(code, id) {
-		if (!isTestJs(id)) return;
-
-		const source = new MagicString(code);
-
-		source.prepend(`import "${virtualModule}";`);
-
-		return {
-			code: source.toString(),
-			map: source.generateDecodedMap(),
-		};
-	},
+	name: "atomico-plugin-md",
+	transform(code, id) {},
 	resolveId(id) {
 		if (id === virtualModule) {
 			return virtualModuleId;

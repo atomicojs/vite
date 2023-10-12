@@ -6,7 +6,7 @@ import { getExtension, isJsx } from "./utils.js";
  * @param {{compilerOptions:{jsxImportSource:string}}} options.tsconfig
  * @param {("js"|"ts"|"jsx"|"tsx")[]} options.include
  * @param {import("esbuild").Loader[]} options.loaders
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
 export const pluginEsbuild = ({
 	tsconfig = {
