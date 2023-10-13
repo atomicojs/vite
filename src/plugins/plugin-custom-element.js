@@ -6,7 +6,7 @@ import { tsMatch, isJs } from "./utils.js";
  * @param {string} options.prefix
  * @param {string[]} options.define
  * @param {boolean} options.onlyExport
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
 export const pluginCustomElement = (options) => ({
 	name: "atomico-plugin-custom-element",

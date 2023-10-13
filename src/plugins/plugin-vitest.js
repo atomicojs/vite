@@ -6,7 +6,7 @@ const virtualModuleId = "\0" + virtualModule;
 
 /**
  *
- * @returns {import("rollup").Plugin}
+ * @returns {import("vite").Plugin}
  */
 export const pluginVitest = () => ({
 	name: "atomico-plugin-vitest",

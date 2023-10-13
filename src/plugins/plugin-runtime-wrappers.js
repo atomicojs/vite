@@ -2,7 +2,7 @@ import * as acornWalk from "acorn-walk";
 import { parse } from "path";
 import { isJs } from "./utils.js";
 /**
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
 export const pluginRuntimeWrappers = () => ({
 	name: "atomico-plugin-custom-element",

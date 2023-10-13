@@ -17,7 +17,7 @@ let task;
  * @param {boolean} [options.postcss]
  * @param {("js"|"ts"|"jsx"|"tsx")[]} options.include
  * @param {(file:string)=>void} options.addFile
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
 export const pluginCssLiterals = ({
 	include = ["js", "ts", "jsx", "tsx"],

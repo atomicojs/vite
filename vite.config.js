@@ -16,6 +16,7 @@ export default defineConfig({
 				prefix: "a",
 				define: ["custom-elements/**/*"],
 			},
+			markdown: true,
 		}),
 	],
 });

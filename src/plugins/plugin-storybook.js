@@ -6,7 +6,7 @@ const reactId = "react/jsx-";
 
 /**
  * @param {string[]} expression
- * @returns {import("rollup").Plugin}
+ * @returns {import("vite").Plugin}
  */
 export function pluginStorybook(expression) {
 	return {

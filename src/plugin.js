@@ -5,6 +5,7 @@ import { pluginLib } from "./plugins/plugin-lib.js";
 import { pluginRuntimeWrappers } from "./plugins/plugin-runtime-wrappers.js";
 import { pluginStorybook } from "./plugins/plugin-storybook.js";
 import { pluginVitest } from "./plugins/plugin-vitest.js";
+import { pluginMd } from "./plugins/plugin-md.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -21,6 +22,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {{include?:string[],fullReload ?: boolean}} [options.storybook]
  * @param {boolean} [options.vitest]
  * @param {boolean} [options.unplugin]
+ * @param {boolean|import("./plugins/plugin-md.js").OptionMd} [options.markdown]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -35,6 +37,7 @@ export default ({
 	customElements,
 	unplugin,
 	runtimeWrappers,
+	markdown,
 } = {}) => {
 	let tsconfig = getTsConfig(process.cwd() + "/" + tsconfigSrc);
 
@@ -133,6 +136,10 @@ export default ({
 
 	if (runtimeWrappers) {
 		plugins.unshift(pluginRuntimeWrappers());
+	}
+
+	if (markdown) {
+		plugins.push(pluginMd(markdown === true ? {} : markdown));
 	}
 
 	return plugins;

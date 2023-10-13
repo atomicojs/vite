@@ -2,7 +2,7 @@ import { normalize } from "path";
 // const virtual = ` atomico-vite-virtual`;
 /**
  * @param {{tmp:string}} options
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
 export function pluginLib({ tmp }) {
 	return {
