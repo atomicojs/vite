@@ -1,8 +1,5 @@
 import { c, html } from "atomico";
-import { SubTag } from "./sub-tag";
 export { SubTag } from "./sub-tag";
-//@ts-ignore
-import jsx from "../example.md";
 
 function button() {
 	return html`<host>
@@ -10,7 +7,6 @@ function button() {
 			rel="stylesheet"
 			href="http://markdowncss.github.io/splendor/css/splendor.css"
 		/>
-		${jsx}
 	</host>`;
 }
 
