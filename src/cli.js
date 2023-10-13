@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-import { build } from "vite";
-import glob from "fast-glob";
-import cac from "cac";
-import { readFile, writeFile, unlink } from "fs/promises";
 import { getModules } from "@atomico/exports/utils";
-import { join, normalize } from "path";
 import { hash } from "@uppercod/hash";
+import cac from "cac";
+import glob from "fast-glob";
+import { readFile } from "fs/promises";
+import { join, normalize, relative } from "path";
+import { build } from "vite";
 import { isJs } from "./plugins/utils.js";
-import { fileURLToPath } from "url";
-import { relative } from "path";
+import { getTmp, write } from "./tmp.js";
 
 const cli = cac("@atomico/vite").version("2.2.1");
 
@@ -59,10 +58,6 @@ cli.command("<...files>", "Build files")
 				).filter(isJs),
 			);
 
-			const tmp = fileURLToPath(
-				new URL(`../cache/lib-${Date.now()}.js`, import.meta.url),
-			);
-
 			global.ATOMICO_VITE_CLI = { files, tmp };
 
 			const filesAbsolute = files.reduce(
@@ -85,7 +80,9 @@ cli.command("<...files>", "Build files")
 				...pkg?.peerDependencies,
 			});
 
-			await writeFile(
+			const tmp = getTmp(`lib-${Date.now()}.js`);
+
+			await write(
 				tmp,
 				Object.entries(filesAbsolute).map(
 					([absolute]) =>
