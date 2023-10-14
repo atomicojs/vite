@@ -88,51 +88,56 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		const files = new Set();
 
-		const customBlock = await Promise.all(
-			blocks.map(async (block, i) => {
-				if (block.type === "code" && block.lang) {
-					const options = block.lang.split(/\s+/);
-					const [extension] = options;
-					const isPreview = options.includes("preview");
-					const file = options.find((option) =>
-						option.endsWith("." + extension),
-					);
+		const customBlock = (
+			await Promise.all(
+				blocks.map(async (block, i) => {
+					if (block.type === "code" && block.lang) {
+						const options = block.lang.split(/\s+/);
+						const [extension] = options;
+						const isPreview = options.includes("preview");
+						const file = options.find((option) =>
+							option.endsWith("." + extension),
+						);
 
-					if (!file && !isPreview)
-						return createCode(block, render.code);
+						if (!file && !isPreview)
+							return createCode(block, render.code);
 
-					await mkdir(getTmp(folder), { recursive: true });
+						await mkdir(getTmp(folder), { recursive: true });
 
-					const src = `${folder}/${
-						file || `preview-${i}-${hash(block.text)}.${extension}`
-					}`;
+						const src = `${folder}/${
+							file ||
+							`preview-${i}-${hash(block.text)}.${extension}`
+						}`;
 
-					const tmp = getTmp(src);
+						const tmp = getTmp(src);
 
-					await write(tmp, block.text);
+						await write(tmp, block.text);
 
-					if (file) files.add(file);
+						if (file) files.add(file);
 
-					sources[tmp] = { files, id, src };
+						sources[tmp] = { files, id, src };
 
-					if (isPreview) {
-						block.preview = true;
-						return [
-							createHtml(
-								`<!--src:${tmp}-->`,
-								createCode(block, render.code),
-							),
-						];
+						if (isPreview) {
+							block.preview = true;
+							return [
+								createHtml(
+									`<!--src:${tmp}-->`,
+									createCode(block, render.code),
+								),
+							];
+						}
 					}
-				}
 
-				if (block.type === "code") {
-					block = createCode(block, render.code);
-				}
+					if (block.type === "code") {
+						block = createCode(block, render.code);
+					}
 
-				return render[block.type] ? render[block.type](block) : block;
-			}),
-		);
+					return render[block.type]
+						? render[block.type](block)
+						: block;
+				}),
+			)
+		).flat(10);
 
 		const html = parser(customBlock)
 			.replace(
