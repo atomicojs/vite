@@ -30,7 +30,7 @@
 		"prepublishOnly": "npm run types && npm run test && npm run exports"
 	},
 	"dependencies": {
-		"@atomico/exports": "^1.11.1",
+		"@atomico/exports": "^1.12.0",
 		"@atomico/postcss-imported": "^1.2.1",
 		"@uppercod/hash": "^1.1.1",
 		"@uppercod/template-literals": "^1.1.3",
