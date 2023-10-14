@@ -26,7 +26,8 @@
 		"check:cli": "node src/cli.js example/**/*.{js,ts,jsx,tsx}",
 		"build": "rm -rf tests/build  && vite build --outDir tests/build",
 		"build:expect": "vite build --outDir tests/expect",
-		"prepublishOnly": "npm run types && npm run test && exports \"./types/**\" \"./src/**\" --main plugin"
+		"exports": "exports \"./types/**\" \"./src/**\" --main plugin",
+		"prepublishOnly": "npm run types && npm run test && npm run exports"
 	},
 	"dependencies": {
 		"@atomico/exports": "^1.11.1",
