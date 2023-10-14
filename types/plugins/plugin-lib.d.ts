@@ -1,5 +1,7 @@
 /**
  * @param {{tmp:string}} options
- * @return {import("rollup").Plugin}
+ * @return {import("vite").Plugin}
  */
-export function pluginLib({ tmp }: { tmp: string }): import("rollup").Plugin;
+export function pluginLib({ tmp }: {
+    tmp: string;
+}): import("vite").Plugin;

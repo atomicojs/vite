@@ -1,5 +1,5 @@
 /**
  * @param {string[]} expression
- * @returns {import("rollup").Plugin}
+ * @returns {import("vite").Plugin}
  */
-export function pluginStorybook(expression: string[]): import("rollup").Plugin;
+export function pluginStorybook(expression: string[]): import("vite").Plugin;

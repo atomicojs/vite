@@ -1,1 +1,1 @@
-export function pluginRuntimeWrappers(): import("rollup").Plugin;
+export function pluginRuntimeWrappers(): import("vite").Plugin;

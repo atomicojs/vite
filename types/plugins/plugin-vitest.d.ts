@@ -1,1 +1,1 @@
-export function pluginVitest(): import("rollup").Plugin;
+export function pluginVitest(): import("vite").Plugin;
