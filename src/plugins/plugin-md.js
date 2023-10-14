@@ -3,7 +3,7 @@ import * as acornWalk from "acorn-walk";
 import { mkdir } from "fs/promises";
 import MagicString from "magic-string";
 import { lexer, parser } from "marked";
-import { getTmp, write } from "../tmp";
+import { getTmp, write } from "../tmp.js";
 
 /**
  * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token)=>import("marked").Token}}} OptionMd
