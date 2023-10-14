@@ -6,14 +6,14 @@ import { lexer, parser } from "marked";
 import { getTmp, write } from "../tmp.js";
 
 /**
- * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token)=>import("marked").Token}}} OptionMd
+ * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: boolean})=>import("marked").Token}}} OptionMd
 
 /**
  * @type {Object<string,{files: Set<string>, id: string, src: string}>}
  */
 const sources = {};
 
-const createBlockHtml = (raw, text = raw) => ({
+export const createHtml = (raw, text = raw) => ({
 	type: "html",
 	block: true,
 	pre: false,
@@ -25,8 +25,8 @@ const createBlockHtml = (raw, text = raw) => ({
  *
  * @param {import("marked").Token} block
  */
-const createBlockEntities = (block, replace) =>
-	(replace || createBlockHtml)(
+export const createCode = (block, replace) =>
+	(replace || createHtml)(
 		`<pre><code class="language-${
 			block.lang.split(" ").at(0) || "unknown"
 		}" textContent="${block.text}"/></pre>`,
@@ -99,7 +99,7 @@ export const pluginMd = ({ render = {}, inject } = {}) => ({
 					);
 
 					if (!file && !isPreview)
-						return createBlockEntities(block, render.code);
+						return createCode(block, render.code);
 
 					await mkdir(getTmp(folder), { recursive: true });
 
@@ -116,12 +116,18 @@ export const pluginMd = ({ render = {}, inject } = {}) => ({
 					sources[tmp] = { files, id, src };
 
 					if (isPreview) {
-						return createBlockHtml(`<!--src:${tmp}-->`);
+						block.preview = true;
+						return [
+							createHtml(
+								`<!--src:${tmp}-->`,
+								createCode(block, render.code),
+							),
+						];
 					}
 				}
 
 				if (block.type === "code") {
-					block = createBlockEntities(block, render.code);
+					block = createCode(block, render.code);
 				}
 
 				return render[block.type] ? render[block.type](block) : block;
