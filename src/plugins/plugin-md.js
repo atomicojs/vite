@@ -104,7 +104,7 @@ export const pluginMd = ({ render = {}, inject } = {}) => ({
 					await mkdir(getTmp(folder), { recursive: true });
 
 					const src = `${folder}/${
-						file || `preview-${i}.${extension}`
+						file || `preview-${i}-${hash(block.text)}.${extension}`
 					}`;
 
 					const tmp = getTmp(src);
