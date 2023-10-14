@@ -1,11 +1,11 @@
-import { pluginCssLiterals } from "./plugins/plugin-css-literals.js";
-import { pluginCustomElement } from "./plugins/plugin-custom-element.js";
-import { pluginEsbuild } from "./plugins/plugin-esbuild.js";
-import { pluginLib } from "./plugins/plugin-lib.js";
-import { pluginRuntimeWrappers } from "./plugins/plugin-runtime-wrappers.js";
-import { pluginStorybook } from "./plugins/plugin-storybook.js";
-import { pluginVitest } from "./plugins/plugin-vitest.js";
-import { pluginMd } from "./plugins/plugin-md.js";
+import { pluginCssLiterals } from "./plugins/css-literals.js";
+import { pluginCustomElement } from "./plugins/custom-element.js";
+import { pluginEsbuild } from "./plugins/esbuild.js";
+import { pluginLibrary } from "./plugins/library.js";
+import { pluginRuntimeWrappers } from "./plugins/runtime-wrappers.js";
+import { pluginStorybook } from "./plugins/storybook.js";
+import { pluginVitest } from "./plugins/vitest.js";
+import { pluginMarkdown } from "./plugins/markdown.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -22,7 +22,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {{include?:string[],fullReload ?: boolean}} [options.storybook]
  * @param {boolean} [options.vitest]
  * @param {boolean} [options.unplugin]
- * @param {boolean|import("./plugins/plugin-md.js").OptionMd} [options.markdown]
+ * @param {boolean|import("./plugins/markdown.js").OptionMd} [options.markdown]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -117,7 +117,7 @@ export default ({
 	if (process.env.VITEST && vitest !== false) plugins.push(pluginVitest());
 
 	if (global.ATOMICO_VITE_CLI) {
-		plugins.unshift(pluginLib(global.ATOMICO_VITE_CLI));
+		plugins.unshift(pluginLibrary(global.ATOMICO_VITE_CLI));
 	}
 
 	if (customElements) {
@@ -139,7 +139,7 @@ export default ({
 	}
 
 	if (markdown) {
-		plugins.push(pluginMd(markdown === true ? {} : markdown));
+		plugins.push(pluginMarkdown(markdown === true ? {} : markdown));
 	}
 
 	return plugins;

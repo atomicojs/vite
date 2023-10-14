@@ -36,7 +36,7 @@ export const createCode = (block, replace) =>
  * @param {OptionMd} option
  * @returns {import("vite").Plugin}
  */
-export const pluginMd = ({ render = {}, inject } = {}) => ({
+export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 	name: "atomico-plugin-md",
 	async transform(code, id) {
 		if (id in sources) {

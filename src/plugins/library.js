@@ -4,7 +4,7 @@ import { normalize } from "path";
  * @param {{tmp:string}} options
  * @return {import("vite").Plugin}
  */
-export function pluginLib({ tmp }) {
+export function pluginLibrary({ tmp }) {
 	return {
 		name: "atomico-plugin-lib",
 		// resolveId(id) {
