@@ -26,11 +26,13 @@ export const createHtml = (raw, text = raw) => ({
  * @param {import("marked").Token} block
  */
 export const createCode = (block, replace) =>
-	(replace || createHtml)(
-		`<pre><code class="language-${
-			block.lang.split(" ").at(0) || "unknown"
-		}" textContent="${block.text}"/></pre>`,
-	);
+	replace
+		? replace(block)
+		: createHtml(
+				`<pre><code class="language-${
+					block.lang.split(" ").at(0) || "unknown"
+				}" textContent="${block.text}"/></pre>`,
+		  );
 
 /**
  * @param {OptionMd} option
