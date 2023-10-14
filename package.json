@@ -6,7 +6,58 @@
 	"main": "./src/plugin.js",
 	"types": "./types/plugin.d.ts",
 	"exports": {
-		".": "./src/plugin.js"
+		".": {
+			"default": "./src/plugin.js",
+			"types": "./types/plugin.d.ts"
+		},
+		"./cli": {
+			"default": "./src/cli.js",
+			"types": "./types/cli.d.ts"
+		},
+		"./plugin": {
+			"default": "./src/plugin.js",
+			"types": "./types/plugin.d.ts"
+		},
+		"./tmp": {
+			"default": "./src/tmp.js",
+			"types": "./types/tmp.d.ts"
+		},
+		"./plugins/css-literals": {
+			"default": "./src/plugins/css-literals.js",
+			"types": "./types/plugins/css-literals.d.ts"
+		},
+		"./plugins/custom-element": {
+			"default": "./src/plugins/custom-element.js",
+			"types": "./types/plugins/custom-element.d.ts"
+		},
+		"./plugins/esbuild": {
+			"default": "./src/plugins/esbuild.js",
+			"types": "./types/plugins/esbuild.d.ts"
+		},
+		"./plugins/library": {
+			"default": "./src/plugins/library.js",
+			"types": "./types/plugins/library.d.ts"
+		},
+		"./plugins/markdown": {
+			"default": "./src/plugins/markdown.js",
+			"types": "./types/plugins/markdown.d.ts"
+		},
+		"./plugins/runtime-wrappers": {
+			"default": "./src/plugins/runtime-wrappers.js",
+			"types": "./types/plugins/runtime-wrappers.d.ts"
+		},
+		"./plugins/storybook": {
+			"default": "./src/plugins/storybook.js",
+			"types": "./types/plugins/storybook.d.ts"
+		},
+		"./plugins/utils": {
+			"default": "./src/plugins/utils.js",
+			"types": "./types/plugins/utils.d.ts"
+		},
+		"./plugins/vitest": {
+			"default": "./src/plugins/vitest.js",
+			"types": "./types/plugins/vitest.d.ts"
+		}
 	},
 	"publishConfig": {
 		"access": "public"
@@ -75,5 +126,71 @@
 	"bin": {
 		"atomico-vite": "./src/cli.js",
 		"library": "./src/cli.js"
+	},
+	"module": "./src/plugin.js",
+	"typesVersions": {
+		"*": {
+			"cli": [
+				"./types/cli.d.ts"
+			],
+			"plugin": [
+				"./types/plugin.d.ts"
+			],
+			"tmp": [
+				"./types/tmp.d.ts"
+			],
+			"plugins/css-literals": [
+				"./types/plugins/css-literals.d.ts"
+			],
+			"plugins/custom-element": [
+				"./types/plugins/custom-element.d.ts"
+			],
+			"plugins/esbuild": [
+				"./types/plugins/esbuild.d.ts"
+			],
+			"plugins/library": [
+				"./types/plugins/library.d.ts"
+			],
+			"plugins/markdown": [
+				"./types/plugins/markdown.d.ts"
+			],
+			"plugins/plugin-css-literals": [
+				"./types/plugins/plugin-css-literals.d.ts"
+			],
+			"plugins/plugin-custom-element": [
+				"./types/plugins/plugin-custom-element.d.ts"
+			],
+			"plugins/plugin-esbuild": [
+				"./types/plugins/plugin-esbuild.d.ts"
+			],
+			"plugins/plugin-lib": [
+				"./types/plugins/plugin-lib.d.ts"
+			],
+			"plugins/plugin-md": [
+				"./types/plugins/plugin-md.d.ts"
+			],
+			"plugins/plugin-runtime-wrappers": [
+				"./types/plugins/plugin-runtime-wrappers.d.ts"
+			],
+			"plugins/plugin-storybook": [
+				"./types/plugins/plugin-storybook.d.ts"
+			],
+			"plugins/plugin-vitest": [
+				"./types/plugins/plugin-vitest.d.ts"
+			],
+			"plugins/runtime-wrappers": [
+				"./types/plugins/runtime-wrappers.d.ts"
+			],
+			"plugins/storybook": [
+				"./types/plugins/storybook.d.ts"
+			],
+			"plugins/utils": [
+				"./types/plugins/utils.d.ts"
+			],
+			"plugins/vitest": [
+				"./types/plugins/vitest.d.ts"
+			]
+		}
 	}
 }
+
