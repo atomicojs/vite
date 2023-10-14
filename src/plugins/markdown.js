@@ -120,10 +120,8 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						if (isPreview) {
 							block.preview = true;
 							return [
-								createHtml(
-									`<!--src:${tmp}-->`,
-									createCode(block, render.code),
-								),
+								createHtml(`<!--src:${tmp}-->`),
+								createCode(block, render.code),
 							];
 						}
 					}

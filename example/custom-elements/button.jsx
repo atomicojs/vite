@@ -1,5 +1,6 @@
 import { c, html } from "atomico";
 export { SubTag } from "./sub-tag";
+import md from "../README.md";
 
 function button() {
 	return html`<host>
@@ -7,6 +8,7 @@ function button() {
 			rel="stylesheet"
 			href="http://markdowncss.github.io/splendor/css/splendor.css"
 		/>
+		${md}
 	</host>`;
 }
 
