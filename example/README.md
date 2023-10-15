@@ -4,7 +4,9 @@ content 1...
 
 ```ts my-theme.ts
 import { createContext } from "atomico";
+import { Brand } from "./brand/brand";
 
+console.log({ Brand });
 export const MyTheme = createContext({ color: "red" });
 
 customElements.define("my-theme", MyTheme);

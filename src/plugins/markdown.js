@@ -4,14 +4,24 @@ import { mkdir } from "fs/promises";
 import MagicString from "magic-string";
 import { lexer, parser } from "marked";
 import { getTmp, write } from "../tmp.js";
-
+import { join } from "path";
 /**
  * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: boolean})=>import("marked").Token}}} OptionMd
 
 /**
- * @type {Object<string,{files: Set<string>, id: string, src: string}>}
+ * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string}}}
  */
 const sources = {};
+
+const fileToRegExp = (file) => {
+	file = file.split("/").at(-1);
+	return RegExp(
+		`^${/\.\w+$/.test(file) ? file : file + ".(js|jsx|tsx|ts)"}$`.replace(
+			/\./g,
+			"\\.",
+		),
+	);
+};
 
 export const createHtml = (raw, text = raw) => ({
 	type: "html",
@@ -40,6 +50,15 @@ export const createCode = (block, replace) =>
  */
 export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 	name: "atomico-plugin-md",
+	resolveId(file, imported) {
+		const source = sources[imported];
+		if (source) {
+			const regExp = fileToRegExp(file);
+			for (const prop in source.files) {
+				if (regExp.test(prop)) return source.files[prop];
+			}
+		}
+	},
 	async transform(code, id) {
 		if (id in sources) {
 			const source = sources[id];
@@ -50,22 +69,23 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 					const src = node?.source?.value || "";
 					const [, file] = src.match(/\/(\w+)$/) || [];
 					if (!file) return;
-					const check = RegExp(
-						`^${
-							/\.\w+$/.test(file)
-								? file
-								: file + ".(js|jsx|tsx|ts)"
-						}$`.replace(/\./g, "\\."),
-					);
-
-					if ([...source.files].some((prop) => check.test(prop)))
-						return;
 
 					if (!src.startsWith(".")) return;
 
+					const regExp = fileToRegExp(file);
+
+					for (const prop in source.files) {
+						if (regExp.test(prop)) return source.files[prop];
+					}
+
+					const folder = source.id
+						.split(/\\|\//)
+						.slice(0, -1)
+						.join("/");
+
 					replace.push([
 						node.source,
-						new URL(src, source.id + "/").href,
+						join(folder, src).replaceAll("\\", "/"),
 					]);
 				},
 			});
@@ -88,7 +108,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		const folder = hash(id);
 
-		const files = new Set();
+		const files = {};
 
 		const customBlock = (
 			await Promise.all(
@@ -106,16 +126,15 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 						await mkdir(getTmp(folder), { recursive: true });
 
-						const src = `${folder}/${
-							file ||
-							`preview-${i}-${hash(block.text)}.${extension}`
-						}`;
+						const src = `${folder}/${`${
+							file ? "file" : "preview"
+						}-${hash(block.text)}.${extension}`}`;
 
 						const tmp = getTmp(src);
 
 						await write(tmp, block.text);
 
-						if (file) files.add(file);
+						if (file) files[file] = tmp;
 
 						sources[tmp] = { files, id, src };
 
