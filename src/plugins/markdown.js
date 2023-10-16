@@ -106,8 +106,6 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		const blocks = lexer(code);
 
-		const idFolder = hash(id);
-
 		const idContent = hash(code);
 
 		const files = {};
@@ -126,11 +124,9 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						if (!file && !isPreview)
 							return createCode(block, render.code);
 
-						await mkdir(getTmp(idFolder), { recursive: true });
-
-						const src = `${idFolder}/${`${
-							file ? "f" : "p"
-						}-${idContent}-${hash(block.text)}.${extension}`}`;
+						const src = `${idContent}-${hash(
+							block.text,
+						)}.${extension}`;
 
 						const tmp = getTmp(src);
 

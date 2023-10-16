@@ -19,7 +19,7 @@ function myButton() {
 export const MyButton = c(myButton);
 
 customElements.define("my-button", MyButton);"/></pre><p>content 3...</p>
-${(await Yt(()=>import("./p-1312e-13138-13115-6970-69ab-6942-b969f40f.js"),[])).default}<pre><code class="language-tsx" textContent="import { MyTheme } from "./my-theme";
+${(await Yt(()=>import("./1312e-13138-13115-6970-69ab-6942-013be196.js"),[])).default}<pre><code class="language-tsx" textContent="import { MyTheme } from "./my-theme";
 import { MyButton } from "./my-button";
 
 export default (
