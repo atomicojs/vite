@@ -141,7 +141,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 							return render.preview
 								? createCode(block, render.preview)
 								: [
-										createHtml(block),
+										createHtml(block.preview),
 										createCode(block, render.code),
 								  ];
 						}
