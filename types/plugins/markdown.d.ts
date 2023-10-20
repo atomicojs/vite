@@ -14,7 +14,7 @@ export type OptionMd = {
     inject: boolean;
     render: {
         [type: string]: (token: import("marked").Token & {
-            preview?: boolean;
+            preview?: string;
         }) => import("marked").Token;
     };
 };
