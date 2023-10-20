@@ -1,15 +1,15 @@
 import { hash } from "@uppercod/hash";
 import * as acornWalk from "acorn-walk";
-import { mkdir } from "fs/promises";
 import MagicString from "magic-string";
 import { lexer, parser } from "marked";
-import { getTmp, write } from "../tmp.js";
 import { join } from "path";
-/**
- * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: boolean})=>import("marked").Token}}} OptionMd
+import { getTmp, write } from "../tmp.js";
 
 /**
- * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string}}}
+ * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string})=>import("marked").Token}}} OptionMd
+
+/**
+ * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string, preview: boolean}}}
  */
 const sources = {};
 
@@ -67,13 +67,13 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 			acornWalk.ancestor(this.parse(code), {
 				ImportDeclaration(node) {
 					const src = node?.source?.value || "";
-					const [, file] = src.match(/\/(\w+)$/) || [];
+					const [, file] =
+						(src.startsWith(".") && src.match(/\/([^\/]+)$/)) || [];
 					if (!file) return;
 
 					if (!src.startsWith(".")) return;
 
 					const regExp = fileToRegExp(file);
-
 					for (const prop in source.files) {
 						if (regExp.test(prop)) return source.files[prop];
 					}
@@ -134,14 +134,16 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 						if (file) files[file] = tmp;
 
-						sources[tmp] = { files, id, src };
+						sources[tmp] = { files, id, src, preview: isPreview };
 
 						if (isPreview) {
-							block.preview = true;
-							return [
-								createHtml(`<!--src:${tmp}-->`),
-								createCode(block, render.code),
-							];
+							block.preview = `<!--preview:${tmp}-->`;
+							return render.preview
+								? createCode(block, render.preview)
+								: [
+										createHtml(block),
+										createCode(block, render.code),
+								  ];
 						}
 					}
 
@@ -158,7 +160,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		const html = parser(customBlock)
 			.replace(
-				/<!--src:(.+)-->/,
+				/<!--preview:(.+)-->/g,
 				(_, id) => `\${(await import("${id}")).default}`,
 			)
 			.replace(/(\\)?`/g, "\\`");
