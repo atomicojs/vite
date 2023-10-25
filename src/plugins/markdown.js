@@ -6,7 +6,7 @@ import { join } from "path";
 import { getTmp, write } from "../tmp.js";
 
 /**
- * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string})=>import("marked").Token}}} OptionMd
+ * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string, options?:string[]})=>import("marked").Token}}} OptionMd
 
 /**
  * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string, preview: boolean}}}
@@ -138,6 +138,9 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 						if (isPreview) {
 							block.preview = `<!--preview:${tmp}-->`;
+							block.options = options
+								.slice(1)
+								.filter((value) => value !== "preview");
 							return render.preview
 								? createCode(block, render.preview)
 								: [
@@ -159,10 +162,11 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 		).flat(10);
 
 		const html = parser(customBlock)
-			.replace(
-				/<!--preview:(.+)-->/g,
-				(_, id) => `\${(await import("${id}")).default}`,
-			)
+			.replace(/([\w\-]+=){0,1}<!--preview:(.+)-->/g, (_, attr, id) => {
+				return attr
+					? `${attr}\${()=>import("${id}")}`
+					: `\${(await import("${id}")).default}`;
+			})
 			.replace(/(\\)?`/g, "\\`");
 
 		return `
