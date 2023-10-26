@@ -124,8 +124,8 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						if (!file && !isPreview)
 							return createCode(block, render.code);
 
-						const src = `${idContent}-${md5(
-							block.text,
+						const src = `${md5(
+							idContent + ":" + block.text,
 						)}.${extension}`;
 
 						const tmp = getTmp(src);
