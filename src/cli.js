@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { getModules } from "@atomico/exports/utils";
-import { hash } from "@uppercod/hash";
 import cac from "cac";
 import glob from "fast-glob";
 import { readFile } from "fs/promises";
 import { join, normalize, relative } from "path";
 import { build } from "vite";
-import { isJs } from "./plugins/utils.js";
+import { isJs, md5 } from "./plugins/utils.js";
 import { getTmp, write } from "./tmp.js";
 
 const cli = cac("@atomico/vite").version("2.2.1");
@@ -114,7 +113,7 @@ cli.command("<...files>", "Build files")
 										: JSON.stringify(data);
 									return id in filesAbsolute
 										? `${filesAbsolute[id] || "index"}.js`
-										: `chunks/${hash(id)}.js`;
+										: `chunks/${md5(id)}.js`;
 								},
 							},
 							external: (source) => {

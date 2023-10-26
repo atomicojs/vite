@@ -1,4 +1,4 @@
-import { hash } from "@uppercod/hash";
+import { md5 } from "./utils.js";
 import * as acornWalk from "acorn-walk";
 import MagicString from "magic-string";
 import { lexer, parser } from "marked";
@@ -106,7 +106,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		const blocks = lexer(code);
 
-		const idContent = hash(code);
+		const idContent = md5(code);
 
 		const files = {};
 
@@ -124,7 +124,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						if (!file && !isPreview)
 							return createCode(block, render.code);
 
-						const src = `${idContent}-${hash(
+						const src = `${idContent}-${md5(
 							block.text,
 						)}.${extension}`;
 

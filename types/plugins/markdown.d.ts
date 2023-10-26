@@ -15,6 +15,7 @@ export type OptionMd = {
     render: {
         [type: string]: (token: import("marked").Token & {
             preview?: string;
+            options?: string[];
         }) => import("marked").Token;
     };
 };

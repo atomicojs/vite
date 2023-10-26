@@ -1,5 +1,14 @@
 import { createRequire } from "module";
 import { readFileSync } from "fs";
+import crypto from "crypto";
+
+/**
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+export const md5 = (value) =>
+	crypto.createHash("md5").update(value).digest("hex");
 
 export const require = createRequire(import.meta.url);
 

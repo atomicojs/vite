@@ -1,11 +1,11 @@
 import { writeFile, mkdir } from "fs/promises";
 import { rmdirSync } from "fs";
 import { fileURLToPath } from "url";
-import { hash } from "@uppercod/hash";
+import { md5 } from "./plugins/utils.js";
 
 const folderId = fileURLToPath(
 	new URL(
-		`../cache/${hash(Date.now() + "-" + Math.random())}`,
+		`../cache/${md5(Date.now() + "-" + Math.random())}`,
 		import.meta.url,
 	),
 ).replaceAll("\\", "/");
