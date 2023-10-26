@@ -1,4 +1,5 @@
 export function jsonAutoFix(content: any): any;
+export function md5(value: string): string;
 export const require: NodeRequire;
 export function getTsJsonConfig(url: string): TsConfig;
 export function getTsConfig(url: string): TsConfig;
