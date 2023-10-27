@@ -4,6 +4,7 @@ import MagicString from "magic-string";
 import { lexer, parser } from "marked";
 import { join } from "path";
 import { getTmp, write } from "../tmp.js";
+import yaml from "js-yaml";
 
 /**
  * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string, options?:string[]})=>import("marked").Token}}} OptionMd
@@ -11,7 +12,9 @@ import { getTmp, write } from "../tmp.js";
 /**
  * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string, preview: boolean}}}
  */
-const sources = {};
+const SOURCES = {};
+
+const FRONTMATTER = "---";
 
 const fileToRegExp = (file) => {
 	file = file.split("/").at(-1);
@@ -51,7 +54,7 @@ export const createCode = (block, replace) =>
 export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 	name: "atomico-plugin-md",
 	resolveId(file, imported) {
-		const source = sources[imported];
+		const source = SOURCES[imported];
 		if (source) {
 			const regExp = fileToRegExp(file);
 			for (const prop in source.files) {
@@ -60,8 +63,8 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 		}
 	},
 	async transform(code, id) {
-		if (id in sources) {
-			const source = sources[id];
+		if (id in SOURCES) {
+			const source = SOURCES[id];
 			const replace = [];
 
 			acornWalk.ancestor(this.parse(code), {
@@ -104,6 +107,23 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		if (!id.endsWith(".md")) return;
 
+		let frontmatter = "";
+		let meta = {};
+
+		if (code.startsWith(FRONTMATTER)) {
+			frontmatter += FRONTMATTER;
+			let position = frontmatter.length;
+			while ((position = ~code.indexOf(FRONTMATTER, position))) {
+				const index = ~position;
+				if (/\n/.test(code[index - 1])) {
+					frontmatter = code.slice(FRONTMATTER.length, index);
+					code = code.slice(index + FRONTMATTER.length);
+					break;
+				}
+			}
+			if (frontmatter) meta = yaml.load(frontmatter);
+		}
+
 		const blocks = lexer(code);
 
 		const idContent = md5(code);
@@ -134,7 +154,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 						if (file) files[file] = tmp;
 
-						sources[tmp] = { files, id, src, preview: isPreview };
+						SOURCES[tmp] = { files, id, src, preview: isPreview };
 
 						if (isPreview) {
 							block.preview = `<!--preview:${tmp}-->`;
@@ -172,6 +192,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 		return `
 		import { html } from 'atomico';
 		${inject || ""}
+		export const meta = ${JSON.stringify(meta)};
 		export default html\`${html}\`;
 		`;
 	},
