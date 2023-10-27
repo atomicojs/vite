@@ -3,6 +3,8 @@ import { readFile } from "fs/promises";
 import glob from "fast-glob";
 import path from "path";
 
+const replaceLine = (value) => value.replace(/\r\n/g, "\n");
+
 test("compare", async () => {
 	const filesExpect = await glob("./tests/expect/**/*");
 	const filesBuild = await glob("./tests/build/**/*");
@@ -10,7 +12,7 @@ test("compare", async () => {
 	const filesWithContentExpect = (
 		await Promise.all(
 			filesExpect.map(async (file) => ({
-				content: await readFile(file, "utf8"),
+				content: replaceLine(await readFile(file, "utf8")),
 				name: path.extname(file),
 			})),
 		)
@@ -19,7 +21,7 @@ test("compare", async () => {
 	const filesWithContentBuild = (
 		await Promise.all(
 			filesBuild.map(async (file) => ({
-				content: await readFile(file, "utf8"),
+				content: replaceLine(await readFile(file, "utf8")),
 				name: path.extname(file),
 			})),
 		)
