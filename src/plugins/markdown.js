@@ -7,6 +7,12 @@ import { getTmp, write } from "../tmp.js";
 import yaml from "js-yaml";
 import htm from "htm";
 
+const ID = `preview:${md5(Math.random().toString())}:`;
+const ID_REGEXP = RegExp(
+	`(\\$)?([\\w\\-]+\=){0,1}\\"${ID}([^\\"|\\']+)\\"`,
+	"g",
+);
+
 function createElement(type, props, ...children) {
 	return {
 		type,
@@ -15,7 +21,7 @@ function createElement(type, props, ...children) {
 		toString() {
 			const attrs = props
 				? Object.entries(props)
-						.map(([attr, value]) => `${attr}="${value}"`)
+						.map(([attr, value]) => `$${attr}="${value}"`)
 						.join(" ")
 				: "";
 			const tagName = /[A-Z]+/.test(type) ? `\$\{${type}\}` : type;
@@ -187,7 +193,7 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 						SOURCES[tmp] = { files, id, src, preview: isPreview };
 
 						if (isPreview) {
-							block.preview = `<!--preview:${tmp}-->`;
+							block.preview = `"${ID}${tmp}"`;
 							block.options = options
 								.slice(1)
 								.filter((value) => value !== "preview");
@@ -213,19 +219,20 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			.flat(10)
 			.filter((value) => value);
 
-		const content = parser(customBlock)
-			.replace(/([\w\-]+=){0,1}<!--preview:(.+)-->/g, (_, attr, id) => {
+		const content = html
+			.call(null, [parser(customBlock).replace(/(\\)?`/g, "\\`")])
+			.join("")
+			.replace(ID_REGEXP, (_, prefix, attr, id) => {
 				return attr
 					? `${attr}\${()=>import("${id}")}`
 					: `\${(await import("${id}")).default}`;
-			})
-			.replace(/(\\)?`/g, "\\`");
+			});
 
 		return `
 		import { html } from 'atomico';
 		${currentImports || ""}
 		export const meta = ${JSON.stringify(meta)};
-		export default html\`${html.call(null, [content]).join("")}\`;
+		export default html\`${content}\`;
 		`;
 	},
 });

@@ -6,12 +6,12 @@ export function createHtml(raw: any, text?: any): {
     text: any;
 };
 export function createCode(block: import("marked").Token, replace: any): any;
-export function pluginMarkdown({ render, inject }?: OptionMd): import("vite").Plugin;
+export function pluginMarkdown({ render, imports }?: OptionMd): import("vite").Plugin;
 /**
  * /**
  */
 export type OptionMd = {
-    inject: boolean;
+    imports: boolean;
     render: {
         [type: string]: (token: import("marked").Token & {
             preview?: string;
