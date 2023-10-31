@@ -171,6 +171,7 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 
 						if (isImports) {
 							currentImports += "\n" + block.text;
+							return;
 						}
 
 						const file = options.find((option) =>
