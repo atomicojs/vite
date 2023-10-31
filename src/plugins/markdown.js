@@ -5,9 +5,31 @@ import { lexer, parser } from "marked";
 import { join } from "path";
 import { getTmp, write } from "../tmp.js";
 import yaml from "js-yaml";
+import htm from "htm";
+
+function createElement(type, props, ...children) {
+	return {
+		type,
+		props,
+		children,
+		toString() {
+			const attrs = props
+				? Object.entries(props)
+						.map(([attr, value]) => `${attr}="${value}"`)
+						.join(" ")
+				: "";
+			const tagName = /[A-Z]+/.test(type) ? `\$\{${type}\}` : type;
+			return `<${tagName}${attrs ? ` ${attrs}` : ""}>${children.join(
+				"",
+			)}</${tagName}>`;
+		},
+	};
+}
+
+const html = htm.bind(createElement);
 
 /**
- * @typedef {{inject: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string, options?:string[]})=>import("marked").Token}}} OptionMd
+ * @typedef {{imports: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string, options?:string[]})=>import("marked").Token}}} OptionMd
 
 /**
  * @type {{[source:string]: { files: {[file:string]: string}, id: string, src: string, preview: boolean}}}
@@ -51,7 +73,7 @@ export const createCode = (block, replace) =>
  * @param {OptionMd} option
  * @returns {import("vite").Plugin}
  */
-export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
+export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 	name: "atomico-plugin-md",
 	resolveId(file, imported) {
 		const source = SOURCES[imported];
@@ -109,6 +131,7 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		let frontmatter = "";
 		let meta = {};
+		let currentImports = imports;
 
 		if (code.startsWith(FRONTMATTER)) {
 			frontmatter += FRONTMATTER;
@@ -137,6 +160,13 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						const options = block.lang.split(/\s+/);
 						const [extension] = options;
 						const isPreview = options.includes("preview");
+						const isImports =
+							extension === "js" && options.includes("imports");
+
+						if (isImports) {
+							currentImports += "\n" + block.text;
+						}
+
 						const file = options.find((option) =>
 							option.endsWith("." + extension),
 						);
@@ -179,9 +209,11 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 						: block;
 				}),
 			)
-		).flat(10);
+		)
+			.flat(10)
+			.filter((value) => value);
 
-		const html = parser(customBlock)
+		const content = parser(customBlock)
 			.replace(/([\w\-]+=){0,1}<!--preview:(.+)-->/g, (_, attr, id) => {
 				return attr
 					? `${attr}\${()=>import("${id}")}`
@@ -191,9 +223,9 @@ export const pluginMarkdown = ({ render = {}, inject } = {}) => ({
 
 		return `
 		import { html } from 'atomico';
-		${inject || ""}
+		${currentImports || ""}
 		export const meta = ${JSON.stringify(meta)};
-		export default html\`${html}\`;
+		export default html\`${html.call(null, [content]).join("")}\`;
 		`;
 	},
 });

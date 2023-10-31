@@ -1,10 +1,14 @@
----
-title: welcome
----
-
 ## Title 1
 
-content 1...
+primero generamos la improtacion
+
+```js imports
+import { c } from "atomico";
+```
+
+Luego declaramos nuestro componente
+
+# content 1...
 
 ```ts my-theme.ts
 import { createContext } from "atomico";
