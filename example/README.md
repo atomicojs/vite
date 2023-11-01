@@ -1,12 +1,10 @@
 ## Title 1
 
-primero generamos la improtacion
+The following block allows injecting imports
 
 ```js imports
-import { c } from "atomico";
+import { Brand } from "./brand/brand";
 ```
-
-Luego declaramos nuestro componente
 
 # content 1...
 
@@ -20,10 +18,12 @@ export const MyTheme = createContext({ color: "red" });
 customElements.define("my-theme", MyTheme);
 ```
 
+## my code {`{10}`}
+
 content 2...
 
 ```tsx my-button.tsx
-import { c, useContext } from "atomico";
+import { c, useContext, css } from "atomico";
 import { MyTheme } from "./my-theme";
 
 function myButton() {
@@ -31,12 +31,18 @@ function myButton() {
 	return <host>color: {color}</host>;
 }
 
+myButton.styles = css`
+	:host {
+		display: block;
+	}
+`;
+
 export const MyButton = c(myButton);
 
 customElements.define("my-button", MyButton);
 ```
 
-content 3...
+this content ... fail?
 
 ```tsx preview
 import { MyTheme } from "./my-theme";

@@ -1,11 +1,12 @@
 import { md5 } from "./utils.js";
 import * as acornWalk from "acorn-walk";
 import MagicString from "magic-string";
-import { lexer, parser } from "marked";
+import { use, lexer, parser } from "marked";
+import { markedXhtml } from "marked-xhtml";
 import { join } from "path";
 import { getTmp, write } from "../tmp.js";
 import yaml from "js-yaml";
-import htm from "htm";
+import { transform as transformEsbuild } from "esbuild";
 
 const ID = `preview:${md5(Math.random().toString())}:`;
 const ID_REGEXP = RegExp(
@@ -13,26 +14,7 @@ const ID_REGEXP = RegExp(
 	"g",
 );
 
-function createElement(type, props, ...children) {
-	return {
-		type,
-		props,
-		children,
-		toString() {
-			const attrs = props
-				? Object.entries(props)
-						.map(([attr, value]) => `$${attr}="${value}"`)
-						.join(" ")
-				: "";
-			const tagName = /[A-Z]+/.test(type) ? `\$\{${type}\}` : type;
-			return `<${tagName}${attrs ? ` ${attrs}` : ""}>${children.join(
-				"",
-			)}</${tagName}>`;
-		},
-	};
-}
-
-const html = htm.bind(createElement);
+use(markedXhtml());
 
 /**
  * @typedef {{imports: boolean,render:{[type:string]:(token:import("marked").Token & {preview?: string, options?:string[]})=>import("marked").Token}}} OptionMd
@@ -72,7 +54,7 @@ export const createCode = (block, replace) =>
 		: createHtml(
 				`<pre><code class="language-${
 					block.lang.split(" ").at(0) || "unknown"
-				}" textContent="${block.text}"/></pre>`,
+				}" />{\`${block.text.replace(/(\\)?`/g, "\\`")}\`}</pre>`,
 		  );
 
 /**
@@ -166,8 +148,7 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 						const options = block.lang.split(/\s+/);
 						const [extension] = options;
 						const isPreview = options.includes("preview");
-						const isImports =
-							extension === "js" && options.includes("imports");
+						const isImports = options.includes("imports");
 
 						if (isImports) {
 							currentImports += "\n" + block.text;
@@ -220,20 +201,30 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			.flat(10)
 			.filter((value) => value);
 
-		const content = html
-			.call(null, [parser(customBlock).replace(/(\\)?`/g, "\\`")])
-			.join("")
-			.replace(ID_REGEXP, (_, prefix, attr, id) => {
+		const content = parser(customBlock).replace(
+			ID_REGEXP,
+			(_, prefix, attr, id) => {
 				return attr
-					? `${attr}\${()=>import("${id}")}`
-					: `\${(await import("${id}")).default}`;
-			});
+					? `${attr}{()=>import("${id}")}`
+					: `{(await import("${id}")).default}`;
+			},
+		);
 
-		return `
-		import { html } from 'atomico';
-		${currentImports || ""}
-		export const meta = ${JSON.stringify(meta)};
-		export default html\`${content}\`;
-		`;
+		write("check.jsx", content);
+
+		const result = await transformEsbuild(
+			`
+			${currentImports || ""}
+			export const meta = ${JSON.stringify(meta)}
+			export default <>${content}</>
+			`,
+			{
+				jsx: "automatic",
+				jsxImportSource: "atomico",
+				loader: "tsx",
+			},
+		);
+
+		return result.code;
 	},
 });
