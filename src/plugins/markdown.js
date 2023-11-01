@@ -1,12 +1,12 @@
-import { md5 } from "./utils.js";
 import * as acornWalk from "acorn-walk";
+import { transform as transformEsbuild } from "esbuild";
+import yaml from "js-yaml";
 import MagicString from "magic-string";
-import { use, lexer, parser } from "marked";
+import { lexer, parser, use } from "marked";
 import { markedXhtml } from "marked-xhtml";
 import { join } from "path";
 import { getTmp, write } from "../tmp.js";
-import yaml from "js-yaml";
-import { transform as transformEsbuild } from "esbuild";
+import { md5 } from "./utils.js";
 
 const ID = `preview:${md5(Math.random().toString())}:`;
 const ID_REGEXP = RegExp(
@@ -209,8 +209,6 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 					: `{(await import("${id}")).default}`;
 			},
 		);
-
-		write("check.jsx", content);
 
 		const result = await transformEsbuild(
 			`
