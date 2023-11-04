@@ -115,8 +115,17 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			};
 		}
 
-		const url = new URL(id);
-		const search = new URLSearchParams(url.search);
+		/**@type {URL} */
+		let url;
+		/**@type {URLSearchParams} */
+		let search;
+
+		try {
+			url = new URL(id);
+			search = new URLSearchParams(url.search);
+		} catch {
+			return;
+		}
 
 		if (!url.pathname.endsWith("md")) return;
 

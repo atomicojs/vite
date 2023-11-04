@@ -1,9 +1,4 @@
-import{j as t,a as e,_ as o,F as r}from"./index-eeec86f7.js";const c=t(r,{children:[e("h2",{children:"Title 1"}),e("p",{children:"The following block allows injecting imports"}),t("pre",{children:[e("code",{class:"language-js"}),`import { Brand } from "./brand/brand";
-
-export const meta = {
-    title: "welcome",
-    author: "UpperCod",
-};`]}),e("h1",{children:"content 1..."}),t("pre",{children:[e("code",{class:"language-ts"}),`import { createContext } from "atomico";
+import{j as t,a as e,_ as o,F as n}from"./index-011f4033.js";const c=t(n,{children:[e("h2",{children:"Title 1"}),e("p",{children:"The following block allows injecting imports"}),e("h1",{children:"content 1..."}),t("pre",{children:[e("code",{class:"language-ts"}),`import { createContext } from "atomico";
 import { Brand } from "./brand/brand";
 
 console.log({ Brand });
@@ -25,7 +20,7 @@ myButton.styles = css\`
 
 export const MyButton = c(myButton);
 
-customElements.define("my-button", MyButton);`]}),e("p",{children:"this content ... fail?"}),(await o(()=>import("./77f90508808a050e7521384db9f9fb2f-84f4fbc9.js"),["assets/77f90508808a050e7521384db9f9fb2f-84f4fbc9.js","assets/index-eeec86f7.js","assets/index-c33e34ae.css"])).default,t("pre",{children:[e("code",{class:"language-tsx"}),`import { MyTheme } from "./my-theme";
+customElements.define("my-button", MyButton);`]}),e("p",{children:"this content ... fail?"}),(await o(()=>import("./77f90508808a050e7521384db9f9fb2f-701cb810.js"),["assets/77f90508808a050e7521384db9f9fb2f-701cb810.js","assets/index-011f4033.js","assets/index-c33e34ae.css"])).default,t("pre",{children:[e("code",{class:"language-tsx"}),`import { MyTheme } from "./my-theme";
 import { MyButton } from "./my-button";
 
 export default (
