@@ -115,14 +115,15 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			};
 		}
 
-		if (!id.endsWith(".md")) return;
+		if (!/\.md(\?meta)?$/.test(id)) return;
 
-		let frontmatter = "";
-		let meta = {};
-		let currentImports = imports;
+		const isMeta = id.endsWith("?meta");
+
+		let currentMeta = "";
+		let currentModule = imports;
 
 		if (code.startsWith(FRONTMATTER)) {
-			frontmatter += FRONTMATTER;
+			let frontmatter = FRONTMATTER;
 			let position = frontmatter.length;
 			while ((position = ~code.indexOf(FRONTMATTER, position))) {
 				const index = ~position;
@@ -132,7 +133,10 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 					break;
 				}
 			}
-			if (frontmatter) meta = yaml.load(frontmatter);
+			if (frontmatter)
+				currentMeta = `export const meta = ${JSON.stringify(
+					yaml.load(frontmatter),
+				)}`;
 		}
 
 		const blocks = lexer(code);
@@ -148,16 +152,19 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 						const options = block.lang.split(/\s+/);
 						const [extension] = options;
 						const isPreview = options.includes("preview");
-						const isImports = options.includes("imports");
 
-						if (isImports) {
-							currentImports += "\n" + block.text;
+						if (options.includes("module")) {
+							currentModule += "\n" + block.text;
 							return;
 						}
 
-						const file = options.find((option) =>
-							option.endsWith("." + extension),
-						);
+						const isMeta = options.includes("meta");
+
+						const file = isMeta
+							? "meta." + extension
+							: options.find((option) =>
+									option.endsWith("." + extension),
+							  );
 
 						if (!file && !isPreview)
 							return createCode(block, render.code);
@@ -167,6 +174,10 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 						)}.${extension}`;
 
 						const tmp = getTmp(src);
+
+						if (isMeta) {
+							currentMeta = `export * from "${tmp}";`;
+						}
 
 						await write(tmp, block.text);
 
@@ -210,19 +221,32 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			},
 		);
 
-		const result = await transformEsbuild(
-			`
-			${currentImports || ""}
-			export const meta = ${JSON.stringify(meta)}
-			export default <>${content}</>
-			`,
-			{
-				jsx: "automatic",
-				jsxImportSource: "atomico",
-				loader: "tsx",
-			},
+		const tmpModuleTemplate = getTmp(idContent + ".tsx");
+
+		await write(
+			tmpModuleTemplate,
+			(
+				await transformEsbuild(
+					`
+				${currentModule || ""}
+				export default <>${content}</>
+				`,
+					{
+						jsx: "automatic",
+						jsxImportSource: "atomico",
+						loader: "tsx",
+					},
+				)
+			).code,
 		);
 
-		return result.code;
+		return `
+			${currentMeta ? currentMeta : ""}
+			${
+				isMeta
+					? `export default async ()=>(await import("${tmpModuleTemplate}")).default;`
+					: `export { default } from "${tmpModuleTemplate}";`
+			}
+		`;
 	},
 });

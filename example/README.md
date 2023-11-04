@@ -2,8 +2,13 @@
 
 The following block allows injecting imports
 
-```js imports
+```js meta
 import { Brand } from "./brand/brand";
+
+export const meta = {
+	title: "welcome",
+	author: "UpperCod",
+};
 ```
 
 # content 1...

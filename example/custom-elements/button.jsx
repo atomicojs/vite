@@ -1,9 +1,13 @@
-import { c, html } from "atomico";
+import { c, html, useAsync } from "atomico";
 export { SubTag } from "./sub-tag";
-import md from "../README.md";
+import * as md from "../README.md?meta";
+
+console.log(md);
 
 function button() {
-	return html`<host>${md}</host>`;
+	const template = useAsync(md.default, []);
+	console.log(template);
+	return html`<host>${template}</host>`;
 }
 
 export const Button = c(button);
