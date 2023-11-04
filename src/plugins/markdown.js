@@ -223,6 +223,8 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 
 		const tmpModuleTemplate = getTmp(idContent + ".tsx");
 
+		SOURCES[tmpModuleTemplate] = { files, id };
+
 		await write(
 			tmpModuleTemplate,
 			(
