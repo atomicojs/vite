@@ -72,7 +72,7 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			}
 		}
 	},
-	async transform(code, id) {
+	async transform(code, id, option) {
 		if (id in SOURCES) {
 			const source = SOURCES[id];
 			const replace = [];
@@ -115,9 +115,12 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			};
 		}
 
-		if (!/\.md(\?meta)?$/.test(id)) return;
+		const url = new URL(id);
+		const search = new URLSearchParams(url.search);
 
-		const isMeta = id.endsWith("?meta");
+		if (!url.pathname.endsWith("md")) return;
+
+		const isMeta = search.has("meta");
 
 		let currentMeta = "";
 		let currentModule = imports;
@@ -175,15 +178,16 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 
 						const tmp = getTmp(src);
 
-						if (isMeta) {
-							currentMeta = `export * from "${tmp}";`;
-						}
-
 						await write(tmp, block.text);
 
 						if (file) files[file] = tmp;
 
 						SOURCES[tmp] = { files, id, src, preview: isPreview };
+
+						if (isMeta) {
+							currentMeta = `export * from "${tmp}";`;
+							return;
+						}
 
 						if (isPreview) {
 							block.preview = `"${ID}${tmp}"`;
