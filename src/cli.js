@@ -101,8 +101,11 @@ cli.command("<...files>", "Build files")
 						watch,
 						target,
 						outDir: dist,
+						lib: {
+							entry: tmp,
+							formats: ["es"],
+						},
 						rollupOptions: {
-							input: [tmp],
 							treeshake: false,
 							preserveModules: false,
 							output: {
