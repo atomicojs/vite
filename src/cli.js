@@ -57,6 +57,8 @@ cli.command("<...files>", "Build files")
 				).filter(isJs),
 			);
 
+			const tmp = getTmp(`lib-${Date.now()}.js`);
+
 			global.ATOMICO_VITE_CLI = { files, tmp };
 
 			const filesAbsolute = files.reduce(
@@ -78,8 +80,6 @@ cli.command("<...files>", "Build files")
 				...pkg?.dependencies,
 				...pkg?.peerDependencies,
 			});
-
-			const tmp = getTmp(`lib-${Date.now()}.js`);
 
 			await write(
 				tmp,
