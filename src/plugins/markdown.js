@@ -115,19 +115,10 @@ export const pluginMarkdown = ({ render = {}, imports = "" } = {}) => ({
 			};
 		}
 
-		/**@type {URL} */
-		let url;
-		/**@type {URLSearchParams} */
-		let search;
+		const [pathname, query] = id.match(/([^\?]+)(?:\?(.+))?/);
+		const search = new URLSearchParams(query);
 
-		try {
-			url = new URL(id);
-			search = new URLSearchParams(url.search);
-		} catch {
-			return;
-		}
-
-		if (!url.pathname.endsWith("md")) return;
+		if (!pathname.endsWith(".md")) return;
 
 		const isMeta = search.has("meta");
 
