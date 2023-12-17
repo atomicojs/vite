@@ -57,6 +57,10 @@
 		"./plugins/vitest": {
 			"default": "./src/plugins/vitest.js",
 			"types": "./types/plugins/vitest.d.ts"
+		},
+		"./utils": {
+			"default": "./src/utils.js",
+			"types": "./types/utils.d.ts"
 		}
 	},
 	"publishConfig": {
@@ -190,6 +194,9 @@
 			],
 			"plugins/vitest": [
 				"./types/plugins/vitest.d.ts"
+			],
+			"utils": [
+				"./types/utils.d.ts"
 			]
 		}
 	}
