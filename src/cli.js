@@ -7,6 +7,7 @@ import { join, normalize, relative } from "path";
 import { build } from "vite";
 import { isJs, md5 } from "./plugins/utils.js";
 import { getTmp, write } from "./tmp.js";
+import { getExtensions } from "./utils.js";
 
 const cli = cac("@atomico/vite").version("2.2.1");
 
@@ -44,6 +45,9 @@ cli.command("<...files>", "Build files")
 			},
 		) => {
 			const cwd = process.cwd();
+
+			const types = getExtensions(src);
+
 			const files = getModules(
 				(
 					await glob(src, {
@@ -54,7 +58,7 @@ cli.command("<...files>", "Build files")
 							"**/_*.{js,jsx,ts,tsx,mjs}",
 						],
 					})
-				).filter(isJs),
+				).filter(types ? (file) => types.test(file) : isJs),
 			);
 
 			const tmp = getTmp(`lib-${Date.now()}.js`);
