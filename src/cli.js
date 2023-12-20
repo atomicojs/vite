@@ -111,7 +111,6 @@ cli.command("<...files>", "Build files")
 						},
 						rollupOptions: {
 							treeshake: false,
-							preserveModules: false,
 							output: {
 								format: "es",
 								chunkFileNames({ facadeModuleId, ...data }) {
