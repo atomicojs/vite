@@ -2,6 +2,8 @@
 	"extends": "@atomico/tsconfig/base.json",
 	"include": ["src/**/*"],
 	"compilerOptions": {
-		"outDir": "types"
+		"outDir": "types",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext"
 	}
 }
