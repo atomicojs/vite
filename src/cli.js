@@ -100,7 +100,7 @@ cli.command("<...files>", "Build files")
 					build: {
 						sourcemap: sourcemap != null,
 						modulePreload: false,
-						cssCodeSplit: false,
+						cssCodeSplit: true,
 						minify: minify != null,
 						watch,
 						target,

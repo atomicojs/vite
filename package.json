@@ -129,7 +129,7 @@
 		"tabWidth": 4
 	},
 	"bin": {
-		"atomico-vite": "./src/cli.js",
+		"atomico/library": "./src/cli.js",
 		"library": "./src/cli.js"
 	},
 	"module": "./src/plugin.js",
