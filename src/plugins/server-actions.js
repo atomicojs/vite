@@ -67,11 +67,11 @@ export function pluginServerActions({
 
 			const [imports, exports] = parse(code);
 
-			const id = Buffer.from(
+			const idFile = Buffer.from(
 				file.replace(srcBase, "").replace(/\.(ts)$/, ".js"),
 			).toString("base64");
 
-			await compile(id);
+			await compile(idFile);
 
 			return {
 				code: [
@@ -80,7 +80,7 @@ export function pluginServerActions({
 						.map(({ n }) => `import "${n}";`),
 					...exports.map(
 						({ n }) =>
-							`export const ${n} = (data)=>fetch("${typeConfig.href}${folder}?id=${id}&use=${n}",{method:"POST",body:JSON.stringify(data)}).then(res=>res.json());`,
+							`export const ${n} = (data)=>fetch("${typeConfig.href}${folder}?id=${idFile}&use=${n}",{method:"POST",body:JSON.stringify(data)}).then(res=>res.json());`,
 					),
 				].join("\n"),
 			};
