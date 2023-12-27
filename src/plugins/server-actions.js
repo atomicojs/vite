@@ -2,7 +2,7 @@ import { pathToRegExp, tsMatch } from "./utils.js";
 import { init, parse } from "es-module-lexer";
 import { mkdir, rm } from "fs/promises";
 import { build } from "esbuild";
-import { copy } from "../template.js";
+import { template } from "../utils.js";
 
 const TYPE_VERCEL = "vercel";
 
@@ -55,7 +55,7 @@ export function pluginServerActions({
 			if (type === TYPE_VERCEL) {
 				await compile(src);
 
-				await copy(`vercel-serverless.js`, `${apiDir}/index.js`);
+				await template("vercel-serverless.js", `${apiDir}/index.js`);
 			}
 		},
 		async transform(code, id) {
@@ -71,7 +71,7 @@ export function pluginServerActions({
 				file.replace(srcBase, "").replace(/\.(ts)$/, ".js"),
 			).toString("base64");
 
-			await compile(idFile);
+			await compile(id);
 
 			return {
 				code: [
