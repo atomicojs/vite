@@ -61,6 +61,10 @@
 		"./utils": {
 			"default": "./src/utils.js",
 			"types": "./types/utils.d.ts"
+		},
+		"./plugins/server-actions": {
+			"default": "./src/plugins/server-actions.js",
+			"types": "./types/plugins/server-actions.d.ts"
 		}
 	},
 	"publishConfig": {
@@ -198,7 +202,11 @@
 			],
 			"utils": [
 				"./types/utils.d.ts"
+			],
+			"plugins/server-actions": [
+				"./types/plugins/server-actions.d.ts"
 			]
 		}
 	}
 }
+
