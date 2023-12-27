@@ -6,6 +6,7 @@ import { pluginRuntimeWrappers } from "./plugins/runtime-wrappers.js";
 import { pluginStorybook } from "./plugins/storybook.js";
 import { pluginVitest } from "./plugins/vitest.js";
 import { pluginMarkdown } from "./plugins/markdown.js";
+import { pluginServerActions } from "./plugins/server-actions.js";
 import { getTsConfig } from "./plugins/utils.js";
 /**
  *
@@ -23,6 +24,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {boolean} [options.vitest]
  * @param {boolean} [options.unplugin]
  * @param {boolean|import("./plugins/markdown.js").OptionMd} [options.markdown]
+ * @param {boolean|import("./plugins/server-actions.js").OptionsServerActions} [options.serverActions]
  * @returns {import("vite").Plugin[]}
  */
 export default ({
@@ -38,6 +40,7 @@ export default ({
 	unplugin,
 	runtimeWrappers,
 	markdown,
+	serverActions,
 } = {}) => {
 	let tsconfig = getTsConfig(process.cwd() + "/" + tsconfigSrc);
 
@@ -140,6 +143,12 @@ export default ({
 
 	if (markdown) {
 		plugins.push(pluginMarkdown(markdown === true ? {} : markdown));
+	}
+
+	if (serverActions) {
+		plugins.push(
+			pluginServerActions(markdown === true ? {} : serverActions),
+		);
 	}
 
 	return plugins;
