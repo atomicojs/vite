@@ -4,23 +4,32 @@ import { mkdir, rm, writeFile } from "fs/promises";
 import { getTmp } from "../tmp.js";
 import { getTemplate } from "../utils.js";
 import { copy, pathToRegExp, tsMatch } from "./utils.js";
+
 const TYPE_VERCEL = "vercel";
 const TYPE_CLOUDFLARE = "cloudflare";
+const TYPE_NETLIFY = "netlify";
 
 const PATHS = {
 	[TYPE_VERCEL]: {
 		src: "./api/",
 		href: "/api/",
+		template: "vercel-serverless.js",
 	},
 	[TYPE_CLOUDFLARE]: {
 		src: "./functions/api/",
 		href: "/api/",
+		template: "cloudflare-pages.js",
+	},
+	[TYPE_NETLIFY]: {
+		src: "./netlify/functions/api/",
+		href: "/api/",
+		template: "netlify-functions.js",
 	},
 };
 /**
  * @typedef {Object} OptionsServerActions
  * @property {string}  [src]
- * @property {TYPE_VERCEL|TYPE_CLOUDFLARE}  [type]
+ * @property {TYPE_VERCEL|TYPE_CLOUDFLARE|TYPE_NETLIFY}  [type]
  * @property {string}  [folder]
  */
 
@@ -34,7 +43,8 @@ export function pluginServerActions({
 	src = "src/api/**/*",
 } = {}) {
 	const typeConfig = PATHS[type];
-	const apiDir = typeConfig.src + folder;
+	const apiDist = typeConfig.src + folder;
+	const fileDir = apiDist + ".js";
 	const srcBase = src.replace("/**/*", "/");
 
 	const href = typeConfig.href;
@@ -47,7 +57,7 @@ export function pluginServerActions({
 
 		const { outputFiles } = await build({
 			entryPoints: [tmpIndex],
-			outdir: apiDir,
+			outdir: apiDist,
 			platform: "node",
 			bundle: true,
 			target: "ESNext",
@@ -56,23 +66,20 @@ export function pluginServerActions({
 		});
 		// Allows the observer to capture file change events
 		const [{ text }] = outputFiles;
-		await writeFile(apiDir + ".js", text);
+		await writeFile(fileDir, text);
 	};
 
 	return {
 		name: "atomico-plugin-server-actions",
 		async config(config) {
 			try {
-				await rm(apiDir, { recursive: true });
+				await rm(fileDir, { recursive: true });
 			} catch {
 			} finally {
 				await mkdir(typeConfig.src, { recursive: true });
 			}
-			const base = getTemplate(
-				type === TYPE_CLOUDFLARE
-					? "cloudflare-pages.js"
-					: "vercel-serverless.js",
-			);
+
+			const base = getTemplate(typeConfig.template);
 
 			await copy(base, tmpIndex);
 
@@ -102,7 +109,7 @@ export function pluginServerActions({
 						.map(({ n }) => `import "${n}";`),
 					...exports.map(
 						({ n }) =>
-							`export const ${n} = (data)=>fetch("${href}${folder}?id=${idFile}&use=${n}",{method:"post",body:JSON.stringify(data),mode:"cors"}).then(res=>res.json());`,
+							`export const ${n} = (data)=>fetch("${href}${folder}?id=${idFile}&use=${n}",{method:"post",body:JSON.stringify(data)}).then(res=>res.json());`,
 					),
 				].join("\n"),
 			};
