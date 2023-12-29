@@ -19,7 +19,15 @@ export async function onRequestPost(context) {
 
 	return new Response(
 		JSON.stringify({
-			...(await module[params.use](await context.request.json())),
+			...(await module[params.use](
+				await context.request[
+					context.request.headers
+						.get("Content-Type")
+						.includes("/form-data")
+						? "formData"
+						: "json"
+				](),
+			)),
 		}),
 		{
 			status: 200,

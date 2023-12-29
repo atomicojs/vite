@@ -113,7 +113,7 @@ export function pluginServerActions({
 						.map(({ n }) => `import "${n}";`),
 					...exports.map(
 						({ n }) =>
-							`export const ${n} = (data)=>serverAction("${href}${folder}?id=${idFile}&use=${n}",data,${/WithForm(\s+|\()/s.test(
+							`export const ${n} = (data)=>serverAction("${href}${folder}?id=${idFile}&use=${n}",data,${/WithForm$/.test(
 								n,
 							)});`,
 					),
