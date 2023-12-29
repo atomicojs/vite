@@ -2,6 +2,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { rmdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { md5 } from "./plugins/utils.js";
+import { subscribe } from "@uppercod/clean-terminal";
 
 const folderId = fileURLToPath(
 	new URL(
@@ -19,4 +20,4 @@ export const write = async (file, code) => {
 	return writeFile(file, code);
 };
 
-process.on("exit", async () => rmdirSync(folderId, { recursive: true }));
+subscribe(() => rmdirSync(folderId, { recursive: true }));
