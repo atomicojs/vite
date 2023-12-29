@@ -1,11 +1,20 @@
+import { readFile } from "fs/promises";
+
+/**
+ * @type {{[id:string]:Promise<string>}}
+ */
+const TEMPLATE_CACHE = {};
 /**
  *
  * @param {string} id
  * @param {string} dest
  */
-export const getTemplate = (id) => new URL(`../templates/${id}`, import.meta.url);
+export const getTemplate = (id) =>
+	new URL(`../templates/${id}`, import.meta.url);
 
-
+export const getTemplateContent = (id) =>
+	(TEMPLATE_CACHE[id] =
+		TEMPLATE_CACHE[id] || readFile(getTemplate(id), "utf8"));
 /**
  *
  * @param {string[]} src;

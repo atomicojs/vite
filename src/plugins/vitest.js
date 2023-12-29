@@ -1,8 +1,9 @@
 import MagicString from "magic-string";
 import { isTestJs } from "./utils.js";
+import { getTemplateContent } from "../utils.js";
 
-const virtualModule = "virtual:atomico-polyfill-vitest";
-const virtualModuleId = "\0" + virtualModule;
+const VIRTUAL_MODULE = "virtual:atomico-polyfill-vitest";
+const VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE;
 
 /**
  *
@@ -15,7 +16,7 @@ export const pluginVitest = () => ({
 
 		const source = new MagicString(code);
 
-		source.prepend(`import "${virtualModule}";`);
+		source.prepend(`import "${VIRTUAL_MODULE}";`);
 
 		return {
 			code: source.toString(),
@@ -23,18 +24,13 @@ export const pluginVitest = () => ({
 		};
 	},
 	resolveId(id) {
-		if (id === virtualModule) {
-			return virtualModuleId;
+		if (id === VIRTUAL_MODULE) {
+			return VIRTUAL_MODULE_ID;
 		}
 	},
 	load(id) {
-		if (id === virtualModuleId) {
-			return `
-            import { beforeEach, afterEach } from "vitest";
-            
-            window.beforeEach = beforeEach;
-            window.afterEach = afterEach;
-            `;
+		if (id === VIRTUAL_MODULE_ID) {
+			return getTemplateContent("vm-vitest.js");
 		}
 	},
 });

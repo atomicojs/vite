@@ -2,8 +2,11 @@ import { init, parse } from "es-module-lexer";
 import { build } from "esbuild";
 import { mkdir, rm, writeFile } from "fs/promises";
 import { getTmp } from "../tmp.js";
-import { getTemplate } from "../utils.js";
+import { getTemplate, getTemplateContent } from "../utils.js";
 import { copy, pathToRegExp, tsMatch } from "./utils.js";
+
+const VIRTUAL_MODULE = "virtual:atomico-polyfill-server-actions";
+const VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE;
 
 const TYPE_VERCEL = "vercel";
 const TYPE_CLOUDFLARE = "cloudflare";
@@ -104,15 +107,28 @@ export function pluginServerActions({
 
 			return {
 				code: [
+					`import { serverAction } from "${VIRTUAL_MODULE}";`,
 					...imports
 						.filter(({ n }) => /^\.\.?\//.test(n))
 						.map(({ n }) => `import "${n}";`),
 					...exports.map(
 						({ n }) =>
-							`export const ${n} = (data)=>fetch("${href}${folder}?id=${idFile}&use=${n}",{method:"post",body:JSON.stringify(data)}).then(res=>res.json());`,
+							`export const ${n} = (data)=>serverAction("${href}${folder}?id=${idFile}&use=${n}",data,${/WithForm(\s+|\()/s.test(
+								n,
+							)});`,
 					),
 				].join("\n"),
 			};
+		},
+		resolveId(id) {
+			if (id === VIRTUAL_MODULE) {
+				return VIRTUAL_MODULE_ID;
+			}
+		},
+		load(id) {
+			if (id === VIRTUAL_MODULE_ID) {
+				return getTemplateContent("vm-server-actions.js");
+			}
 		},
 	};
 }
