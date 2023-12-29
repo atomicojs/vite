@@ -1,21 +1,26 @@
-import { pathToRegExp, tsMatch } from "./utils.js";
 import { init, parse } from "es-module-lexer";
-import { mkdir, rm } from "fs/promises";
 import { build } from "esbuild";
-import { template } from "../utils.js";
-
+import { mkdir, rm, writeFile } from "fs/promises";
+import { getTmp } from "../tmp.js";
+import { getTemplate } from "../utils.js";
+import { copy, pathToRegExp, tsMatch } from "./utils.js";
 const TYPE_VERCEL = "vercel";
+const TYPE_CLOUDFLARE = "cloudflare";
 
 const PATHS = {
 	[TYPE_VERCEL]: {
 		src: "./api/",
 		href: "/api/",
 	},
+	[TYPE_CLOUDFLARE]: {
+		src: "./functions/api/",
+		href: "/api/",
+	},
 };
 /**
  * @typedef {Object} OptionsServerActions
  * @property {string}  [src]
- * @property {TYPE_VERCEL}  [type]
+ * @property {TYPE_VERCEL|TYPE_CLOUDFLARE}  [type]
  * @property {string}  [folder]
  */
 
@@ -32,31 +37,48 @@ export function pluginServerActions({
 	const apiDir = typeConfig.src + folder;
 	const srcBase = src.replace("/**/*", "/");
 
-	const compile = (src) =>
-		build({
-			entryPoints: [src],
-			outdir: apiDir + "/_",
+	const href = typeConfig.href;
+
+	const tmpIndex = getTmp("server-actions/index.js");
+	const tmpApi = getTmp("server-actions/_");
+
+	const compile = async () => {
+		await copy(srcBase, tmpApi);
+
+		const { outputFiles } = await build({
+			entryPoints: [tmpIndex],
+			outdir: apiDir,
 			platform: "node",
-			bundle: false,
+			bundle: true,
 			target: "ESNext",
+			format: "esm",
+			write: false,
 		});
+		// Allows the observer to capture file change events
+		const [{ text }] = outputFiles;
+		await writeFile(apiDir + ".js", text);
+	};
 
 	return {
 		name: "atomico-plugin-server-actions",
-		async config() {
+		async config(config) {
 			try {
 				await rm(apiDir, { recursive: true });
 			} catch {
 			} finally {
-				await mkdir(apiDir + "/_", {
-					recursive: true,
-				});
+				await mkdir(typeConfig.src, { recursive: true });
 			}
-			if (type === TYPE_VERCEL) {
-				await compile(src);
+			const base = getTemplate(
+				type === TYPE_CLOUDFLARE
+					? "cloudflare-pages.js"
+					: "vercel-serverless.js",
+			);
 
-				await template("vercel-serverless.js", `${apiDir}/index.js`);
-			}
+			await copy(base, tmpIndex);
+
+			await compile();
+
+			return config;
 		},
 		async transform(code, id) {
 			if (!tsMatch(id, [src])) return;
@@ -67,11 +89,11 @@ export function pluginServerActions({
 
 			const [imports, exports] = parse(code);
 
-			const idFile = Buffer.from(
-				file.replace(srcBase, "").replace(/\.(ts)$/, ".js"),
-			).toString("base64");
+			const idFile = Buffer.from(file.replace(srcBase, "")).toString(
+				"base64",
+			);
 
-			await compile(id);
+			await compile();
 
 			return {
 				code: [
@@ -80,7 +102,7 @@ export function pluginServerActions({
 						.map(({ n }) => `import "${n}";`),
 					...exports.map(
 						({ n }) =>
-							`export const ${n} = (data)=>fetch("${typeConfig.href}${folder}?id=${idFile}&use=${n}",{method:"POST",body:JSON.stringify(data)}).then(res=>res.json());`,
+							`export const ${n} = (data)=>fetch("${href}${folder}?id=${idFile}&use=${n}",{method:"post",body:JSON.stringify(data),mode:"cors"}).then(res=>res.json());`,
 					),
 				].join("\n"),
 			};

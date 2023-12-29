@@ -1,6 +1,9 @@
-import { createRequire } from "module";
-import { readFileSync } from "fs";
 import crypto from "crypto";
+import { readFileSync } from "fs";
+import { cp } from "fs/promises";
+import { createRequire } from "module";
+
+export const copy = (src, dest) => cp(src, dest, { recursive: true });
 
 /**
  *

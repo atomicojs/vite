@@ -1,11 +1,10 @@
-import { copyFile } from "fs/promises";
 /**
  *
  * @param {string} id
  * @param {string} dest
  */
-export const template = (id, dest) =>
-	copyFile(new URL(`../templates/${id}`, import.meta.url), dest);
+export const getTemplate = (id) => new URL(`../templates/${id}`, import.meta.url);
+
 
 /**
  *
