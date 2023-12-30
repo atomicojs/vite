@@ -3,8 +3,8 @@
  * @param {{request: Request, next:()=>Promise<Response>}} context
  * @returns
  */
-export async function onRequestPost(context) {
-	const [, search] = context.request.url.split("?");
+export async function onRequestPost({ request }) {
+	const [, search] = request.url.split("?");
 	const params = Object.fromEntries(new URLSearchParams(search));
 
 	if (!params.id || !params.use)
@@ -17,17 +17,24 @@ export async function onRequestPost(context) {
 
 	const module = await import(`./_/${file}`);
 
+	const isFormData = request.headers
+		.get("Content-Type")
+		.includes("/form-data");
+
+	const data = {};
+
+	if (isFormData) {
+		const formData = await request.formData();
+		formData.forEach((value, prop) => {
+			data[prop] = value instanceof File ? value : JSON.parse(value);
+		});
+	} else {
+		Object.assign(await request.json());
+	}
+
 	return new Response(
 		JSON.stringify({
-			...(await module[params.use](
-				await context.request[
-					context.request.headers
-						.get("Content-Type")
-						.includes("/form-data")
-						? "formData"
-						: "json"
-				](),
-			)),
+			...(await module[params.use](data)),
 		}),
 		{
 			status: 200,
