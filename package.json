@@ -108,6 +108,7 @@
 		"atomico": "*"
 	},
 	"devDependencies": {
+		"@atomico/cloudflare": "^1.0.0",
 		"@atomico/postcss-tokens": "^1.7.0",
 		"@atomico/react": "^2.6.0",
 		"@atomico/tsconfig": "^1.0.0",

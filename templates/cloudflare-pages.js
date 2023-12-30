@@ -1,9 +1,11 @@
+import { load } from "@atomico/cloudflare";
 /**
  *
- * @param {{request: Request, next:()=>Promise<Response>}} context
+ * @param {import("@cloudflare/workers-types").EventContext<any,any,any>} context
  * @returns
  */
-export async function onRequestPost({ request }) {
+export async function onRequestPost(context) {
+	const { request } = context;
 	const [, search] = request.url.split("?");
 	const params = Object.fromEntries(new URLSearchParams(search));
 
@@ -34,7 +36,7 @@ export async function onRequestPost({ request }) {
 
 	return new Response(
 		JSON.stringify({
-			...(await module[params.use](data)),
+			...(await load(() => module[params.use](data), context)),
 		}),
 		{
 			status: 200,
