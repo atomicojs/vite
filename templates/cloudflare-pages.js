@@ -29,7 +29,7 @@ export async function onRequestPost({ request }) {
 			data[prop] = value instanceof File ? value : JSON.parse(value);
 		});
 	} else {
-		Object.assign(await request.json());
+		Object.assign(data, await request.json());
 	}
 
 	return new Response(
