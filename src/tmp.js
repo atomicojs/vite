@@ -1,5 +1,5 @@
 import { writeFile, mkdir } from "fs/promises";
-import { rmdirSync } from "fs";
+import { rmSync } from "fs";
 import { fileURLToPath } from "url";
 import { md5 } from "./plugins/utils.js";
 import { subscribe } from "@uppercod/clean-terminal";
@@ -20,4 +20,4 @@ export const write = async (file, code) => {
 	return writeFile(file, code);
 };
 
-subscribe(() => rmdirSync(folderId, { recursive: true }));
+subscribe(() => rmSync(folderId, { recursive: true }));
