@@ -1,10 +1,17 @@
 import MagicString from "magic-string";
 import * as acornWalk from "acorn-walk";
 import { tsMatch, isJs } from "./utils.js";
+
+const AtomicoWrappers = {
+	atomico: ["c", "createContext"],
+	"@atomico/store": ["createStore"],
+};
+
 /**
  * @param {object} options
  * @param {string} options.prefix
  * @param {string[]} options.define
+ * @param {Record<string,string[]>} options.wrappers
  * @param {boolean} options.onlyExport
  * @return {import("vite").Plugin}
  */
@@ -18,28 +25,38 @@ export const pluginCustomElement = (options) => ({
 
 		const customElements = new Set();
 
-		let isAtomico;
+		const wrappers = {
+			...options.wrappers,
+			...AtomicoWrappers,
+		};
+
+		const wrappersVariableDeclaration = new Set();
 
 		acornWalk.ancestor(ast, {
 			ImportDeclaration(node) {
-				if (
-					node?.source?.value === "atomico" &&
-					node.specifiers.some(
-						({ imported }) => imported.name === "c",
-					)
-				) {
-					isAtomico = true;
+				if (wrappers[node?.source?.value]) {
+					const { imported } =
+						node.specifiers.find(({ imported }) =>
+							wrappers[node?.source?.value].includes(
+								imported.name,
+							),
+						) || {};
+					if (imported)
+						wrappersVariableDeclaration.add(imported.name);
 				}
 			},
 			ExportNamedDeclaration(node) {
-				if (!isAtomico || !node.declaration) return;
+				if (!wrappersVariableDeclaration.size || !node.declaration)
+					return;
 
 				const { type } = node.declaration;
 
 				if (
 					type === "VariableDeclaration" &&
-					node?.declaration?.declarations?.[0]?.init?.callee?.name ===
-						"c"
+					wrappersVariableDeclaration.has(
+						node?.declaration?.declarations?.[0]?.init?.callee
+							?.name,
+					)
 				) {
 					customElements.add(
 						node?.declaration?.declarations?.[0]?.id?.name,

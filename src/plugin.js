@@ -19,6 +19,7 @@ import { getTsConfig } from "./plugins/utils.js";
  * @param {string} [options.tsconfig]
  * @param {object} [options.customElements]
  * @param {string} [options.customElements.prefix]
+ * @param {Record<string,string[]>} [options.customElements.wrappers]
  * @param {string[]} [options.customElements.define]
  * @param {{include?:string[],fullReload ?: boolean}} [options.storybook]
  * @param {boolean} [options.vitest]
