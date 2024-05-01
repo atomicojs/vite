@@ -1,70 +1,70 @@
 {
 	"name": "@atomico/vite",
 	"description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
-	"version": "2.17.9",
+	"version": "2.18.0",
 	"type": "module",
 	"main": "./src/plugin.js",
 	"types": "./types/plugin.d.ts",
 	"exports": {
 		".": {
-			"default": "./src/plugin.js",
-			"types": "./types/plugin.d.ts"
+			"types": "./types/plugin.d.ts",
+			"default": "./src/plugin.js"
 		},
 		"./cli": {
-			"default": "./src/cli.js",
-			"types": "./types/cli.d.ts"
+			"types": "./types/cli.d.ts",
+			"default": "./src/cli.js"
 		},
 		"./plugin": {
-			"default": "./src/plugin.js",
-			"types": "./types/plugin.d.ts"
+			"types": "./types/plugin.d.ts",
+			"default": "./src/plugin.js"
 		},
 		"./tmp": {
-			"default": "./src/tmp.js",
-			"types": "./types/tmp.d.ts"
+			"types": "./types/tmp.d.ts",
+			"default": "./src/tmp.js"
 		},
 		"./plugins/css-literals": {
-			"default": "./src/plugins/css-literals.js",
-			"types": "./types/plugins/css-literals.d.ts"
+			"types": "./types/plugins/css-literals.d.ts",
+			"default": "./src/plugins/css-literals.js"
 		},
 		"./plugins/custom-element": {
-			"default": "./src/plugins/custom-element.js",
-			"types": "./types/plugins/custom-element.d.ts"
+			"types": "./types/plugins/custom-element.d.ts",
+			"default": "./src/plugins/custom-element.js"
 		},
 		"./plugins/esbuild": {
-			"default": "./src/plugins/esbuild.js",
-			"types": "./types/plugins/esbuild.d.ts"
+			"types": "./types/plugins/esbuild.d.ts",
+			"default": "./src/plugins/esbuild.js"
 		},
 		"./plugins/library": {
-			"default": "./src/plugins/library.js",
-			"types": "./types/plugins/library.d.ts"
+			"types": "./types/plugins/library.d.ts",
+			"default": "./src/plugins/library.js"
 		},
 		"./plugins/markdown": {
-			"default": "./src/plugins/markdown.js",
-			"types": "./types/plugins/markdown.d.ts"
+			"types": "./types/plugins/markdown.d.ts",
+			"default": "./src/plugins/markdown.js"
 		},
 		"./plugins/runtime-wrappers": {
-			"default": "./src/plugins/runtime-wrappers.js",
-			"types": "./types/plugins/runtime-wrappers.d.ts"
+			"types": "./types/plugins/runtime-wrappers.d.ts",
+			"default": "./src/plugins/runtime-wrappers.js"
 		},
 		"./plugins/storybook": {
-			"default": "./src/plugins/storybook.js",
-			"types": "./types/plugins/storybook.d.ts"
+			"types": "./types/plugins/storybook.d.ts",
+			"default": "./src/plugins/storybook.js"
 		},
 		"./plugins/utils": {
-			"default": "./src/plugins/utils.js",
-			"types": "./types/plugins/utils.d.ts"
+			"types": "./types/plugins/utils.d.ts",
+			"default": "./src/plugins/utils.js"
 		},
 		"./plugins/vitest": {
-			"default": "./src/plugins/vitest.js",
-			"types": "./types/plugins/vitest.d.ts"
+			"types": "./types/plugins/vitest.d.ts",
+			"default": "./src/plugins/vitest.js"
 		},
 		"./utils": {
-			"default": "./src/utils.js",
-			"types": "./types/utils.d.ts"
+			"types": "./types/utils.d.ts",
+			"default": "./src/utils.js"
 		},
 		"./plugins/server-actions": {
-			"default": "./src/plugins/server-actions.js",
-			"types": "./types/plugins/server-actions.d.ts"
+			"types": "./types/plugins/server-actions.d.ts",
+			"default": "./src/plugins/server-actions.js"
 		}
 	},
 	"publishConfig": {

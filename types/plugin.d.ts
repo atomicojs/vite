@@ -1,4 +1,4 @@
-declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, vitest, customElements, unplugin, runtimeWrappers, markdown, }?: {
+declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, vitest, customElements, unplugin, runtimeWrappers, markdown, serverActions, }?: {
     jsx?: boolean;
     cssLiterals?: {
         minify?: boolean;
@@ -8,6 +8,7 @@ declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, 
     tsconfig?: string;
     customElements?: {
         prefix?: string;
+        wrappers?: Record<string, string[]>;
         define?: string[];
     };
     storybook?: {
@@ -17,5 +18,6 @@ declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, 
     vitest?: boolean;
     unplugin?: boolean;
     markdown?: boolean | import("./plugins/markdown.js").OptionMd;
+    serverActions?: boolean | import("./plugins/server-actions.js").OptionsServerActions;
 }): import("vite").Plugin[];
 export default _default;
