@@ -24,8 +24,8 @@ const PATHS = {
 		template: "cloudflare-pages.js",
 	},
 	[TYPE_NETLIFY]: {
-		src: "./netlify/functions/api/",
-		href: "/api/",
+		src: "./netlify/functions/",
+		href: "/.netlify/functions/",
 		template: "netlify-functions.js",
 	},
 };
@@ -33,6 +33,7 @@ const PATHS = {
  * @typedef {Object} OptionsServerActions
  * @property {string}  [src]
  * @property {TYPE_VERCEL|TYPE_CLOUDFLARE|TYPE_NETLIFY}  [type]
+ * @property {{src:string,href:string}}  [options]
  * @property {string}  [folder]
  */
 
@@ -44,8 +45,12 @@ export function pluginServerActions({
 	type = TYPE_VERCEL,
 	folder = "server-actions",
 	src = "src/api/**/*",
+	options,
 } = {}) {
-	const typeConfig = PATHS[type];
+	const typeConfig = {
+		...PATHS[type],
+		...options,
+	};
 	const apiDist = typeConfig.src + folder;
 	const fileDir = apiDist + ".js";
 	const srcBase = src.replace("/**/*", "/");
