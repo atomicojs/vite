@@ -65,6 +65,10 @@
 		"./plugins/server-actions": {
 			"types": "./types/plugins/server-actions.d.ts",
 			"default": "./src/plugins/server-actions.js"
+		},
+		"./client/server-actions": {
+			"types": "./types/client/server-actions.d.ts",
+			"default": "./src/client/server-actions.js"
 		}
 	},
 	"publishConfig": {
@@ -207,6 +211,9 @@
 			],
 			"plugins/server-actions": [
 				"./types/plugins/server-actions.d.ts"
+			],
+			"client/server-actions": [
+				"./types/client/server-actions.d.ts"
 			]
 		}
 	}
