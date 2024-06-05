@@ -4,3 +4,8 @@
 /**/*.test.js
 /**/*.spec.js
 /vite.config.js
+/.vscode
+/.github
+/example
+/tests
+/lib
