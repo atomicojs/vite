@@ -17,7 +17,7 @@ declare function _default({ jsx, cssLiterals, tsconfig: tsconfigSrc, storybook, 
     };
     vitest?: boolean;
     unplugin?: boolean;
-    markdown?: boolean | import("./plugins/markdown.js").OptionMd;
+    markdown?: boolean | any;
     serverActions?: boolean | import("./plugins/server-actions.js").OptionsServerActions;
 }): import("vite").Plugin[];
 export default _default;
