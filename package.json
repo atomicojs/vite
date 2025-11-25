@@ -93,7 +93,7 @@
 		"prepublishOnly": "npm run types && npm run test && npm run exports"
 	},
 	"dependencies": {
-		"@atomico/exports": "^1.13.1",
+		"@atomico/exports": "^1.13.1||^2.0.0",
 		"@atomico/postcss-imported": "^1.2.1",
 		"@uppercod/clean-terminal": "^1.0.1",
 		"@uppercod/template-literals": "^1.1.3",
