@@ -1,7 +1,7 @@
 {
 	"name": "@atomico/vite",
 	"description": "configuration for Vite + Atomico, this plugin sets the necessary configuration to use Atomico + Jsx within vite",
-	"version": "2.21.1",
+	"version": "3.0.0",
 	"type": "module",
 	"main": "./src/plugin.js",
 	"types": "./types/plugin.d.ts",
@@ -93,7 +93,7 @@
 		"prepublishOnly": "npm run types && npm run test && npm run exports"
 	},
 	"dependencies": {
-		"@atomico/exports": "^1.13.1||^2.0.0",
+		"@atomico/exports": "^2.0.0",
 		"@atomico/postcss-imported": "^1.2.1",
 		"@uppercod/clean-terminal": "^1.0.1",
 		"@uppercod/template-literals": "^1.1.3",
@@ -102,9 +102,7 @@
 		"es-module-lexer": "*",
 		"esbuild": "*",
 		"js-yaml": "*",
-		"magic-string": "^0.26.5",
-		"marked": "^9.1.1",
-		"marked-xhtml": "^1.0.6",
+		"magic-string": "^0.30.21",
 		"postcss": "^8.4.17",
 		"postcss-load-config": "^4.0.1"
 	},
@@ -114,16 +112,15 @@
 	"devDependencies": {
 		"@atomico/cloudflare": "^1.0.0",
 		"@atomico/postcss-tokens": "^1.7.0",
-		"@atomico/react": "^2.6.0",
 		"@atomico/tsconfig": "^1.0.0",
-		"@types/node": "^18.11.9",
-		"atomico": "^1.74.2",
+		"@types/node": "^24.10.1",
+		"atomico": "^2.1.0-beta",
 		"fast-glob": "^3.2.11",
 		"normalize.css": "^8.0.1",
 		"postcss-import": "^14.1.0",
 		"typescript": "^5.3.3",
-		"vite": "^5.0.10",
-		"vitest": "^1.1.0"
+		"vite": "^7.2.4",
+		"vitest": "^4.0.14"
 	},
 	"postcss": {
 		"plugins": {

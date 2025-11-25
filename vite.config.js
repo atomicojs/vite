@@ -4,6 +4,7 @@ import plugin from "./src/plugin.js";
 export default defineConfig({
 	build: {
 		target: "esnext",
+		modulePreload: false,
 	},
 	test: {
 		environment: "node",
@@ -16,7 +17,6 @@ export default defineConfig({
 				prefix: "a",
 				define: ["custom-elements/**/*"],
 			},
-			markdown: true,
 		}),
 	],
 });
