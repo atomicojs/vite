@@ -114,7 +114,7 @@ export const getTsConfig = (url) => {
 export const getExtension = (id) =>
 	(id.match(/\.(\w+)(\?.+){0,1}$/) || []).at(1);
 
-export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts)(\?.+){0,1}$/.test(id);
+export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts|mts)(\?.+){0,1}$/.test(id);
 
 export const isJsx = (id) => /\.(tsx|jsx(\?.+){0,1})$/.test(id);
 

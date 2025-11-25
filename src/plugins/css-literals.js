@@ -20,7 +20,7 @@ let task;
  * @return {import("vite").Plugin}
  */
 export const pluginCssLiterals = ({
-	include = ["js", "ts", "jsx", "tsx"],
+	include = ["js", "ts", "jsx", "tsx", "mts", "mjs"],
 	...options
 } = {}) => ({
 	name: "atomico-plugin-css-literals",
