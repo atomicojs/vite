@@ -116,7 +116,7 @@ export const getExtension = (id) =>
 
 export const isJs = (id) => /\.(tsx|jsx|js|mjs|ts|mts)(\?.+){0,1}$/.test(id);
 
-export const isJsx = (id) => /\.(tsx|jsx(\?.+){0,1})$/.test(id);
+export const isJsx = (id) => /\.(jsx(\?.+){0,1})$/.test(id);
 
 export const isTestJs = (id) => /\.(test|spec)\.(tsx|jsx|js|mjs|ts)$/.test(id);
 
